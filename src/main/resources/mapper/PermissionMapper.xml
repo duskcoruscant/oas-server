@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hwenbin.server.mapper.PermissionMapper">
-    <resultMap id="PermissionMap" type="com.zoctan.api.entity.Permission">
+    <resultMap id="PermissionMap" type="com.hwenbin.server.entity.Permission">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="resource" jdbcType="VARCHAR" property="resource"/>
         <result column="code" jdbcType="VARCHAR" property="code"/>
         <result column="handle" jdbcType="VARCHAR" property="handle"/>
     </resultMap>
 
-    <resultMap id="ResourceWithHandleMap" type="com.zoctan.api.entity.Resource">
+    <resultMap id="ResourceWithHandleMap" type="com.hwenbin.server.entity.Resource">
         <result column="resource" jdbcType="VARCHAR" property="resource"/>
-        <collection property="handleList" ofType="com.zoctan.api.entity.Handle">
+        <collection property="handleList" ofType="com.hwenbin.server.entity.Handle">
             <id column="id" jdbcType="BIGINT" property="id"/>
             <result column="handle" jdbcType="VARCHAR" property="handle"/>
         </collection>

@@ -34,7 +34,7 @@ public class Swagger2Config {
     }
 
     private ApiInfo buildApiInfo() {
-        final Contact contact = new Contact("Zoctan", "https://github.com/Zoctan", "752481828@qq.com");
+        final Contact contact = new Contact("hwenbin", "https://github.com/duskcoruscant", "hwenbinjobs@gmail.com");
 
         return new ApiInfoBuilder()
                 .title("APIs doc")

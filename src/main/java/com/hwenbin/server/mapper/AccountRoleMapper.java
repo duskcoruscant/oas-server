@@ -16,8 +16,8 @@ public interface AccountRoleMapper extends MyMapper<AccountRole> {
      *
      * @param accountRole 用户角色
      */
-    @Update(
-            "UPDATE account_role SET role_id = #{accountRole.roleId} WHERE account_id = #{accountRole.accountId}")
+    // @Update(
+    //         "UPDATE account_role SET role_id = #{accountRole.roleId} WHERE account_id = #{accountRole.accountId}")
     void updateRoleIdByAccountId(@Param("accountRole") AccountRole accountRole);
 
 }

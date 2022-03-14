@@ -37,7 +37,7 @@ public class RsaEncryptor {
         System.out.println("公钥：" + publicKey);
         System.out.println("私钥：" + privateKey);
 
-        final String data = "zoctan";
+        final String data = "hwenbin";
         // 公钥加密
         final byte[] encrypted = this.rsaUtil.encrypt(data.getBytes());
         System.out.println("加密后：" + Base64.encodeBase64String(encrypted));

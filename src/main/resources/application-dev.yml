@@ -46,7 +46,7 @@ spring:
 
 logging:
   # 日志级别
-  level.com.zoctan.api: debug
+  level.com.hwenbin.server: debug
 
 # Json web token
 jwt:

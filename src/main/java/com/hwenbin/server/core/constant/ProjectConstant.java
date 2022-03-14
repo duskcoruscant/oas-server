@@ -26,7 +26,7 @@ public final class ProjectConstant {
     /**
      * 项目基础包名称
      */
-    public static final String BASE_PACKAGE = "com.zoctan.api";
+    public static final String BASE_PACKAGE = "com.hwenbin.server";
 
     /**
      * Entity 所在包

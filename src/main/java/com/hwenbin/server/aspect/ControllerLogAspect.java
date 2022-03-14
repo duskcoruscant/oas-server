@@ -29,7 +29,7 @@ public class ControllerLogAspect {
      */
     private LocalDateTime startTime;
 
-    @Pointcut("execution(* com.zoctan.api.controller..*.*(..))")
+    @Pointcut("execution(* com.hwenbin.server.controller..*.*(..))")
     public void controllers() {
     }
 

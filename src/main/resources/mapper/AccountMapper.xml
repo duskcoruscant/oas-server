@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hwenbin.server.mapper.AccountMapper">
 
-    <resultMap id="AccountMap" type="com.zoctan.api.entity.Account">
+    <resultMap id="AccountMap" type="com.hwenbin.server.entity.Account">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
@@ -11,7 +11,7 @@
         <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
     </resultMap>
 
-    <resultMap id="AccountWithRoleMap" type="com.zoctan.api.dto.AccountWithRole" extends="AccountMap">
+    <resultMap id="AccountWithRoleMap" type="com.hwenbin.server.dto.AccountWithRole" extends="AccountMap">
         <result column="role_id" jdbcType="BIGINT" property="roleId"/>
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
     </resultMap>
@@ -38,7 +38,7 @@
         </where>
     </select>
 
-    <resultMap id="AccountWithRolePermissionMap" type="com.zoctan.api.dto.AccountWithRolePermission"
+    <resultMap id="AccountWithRolePermissionMap" type="com.hwenbin.server.dto.AccountWithRolePermission"
                extends="AccountWithRoleMap">
         <!-- 1角色对应多权限 -->
         <collection property="permissionCodeList" ofType="String">
