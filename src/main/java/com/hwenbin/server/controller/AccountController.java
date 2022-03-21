@@ -132,12 +132,7 @@ public class AccountController {
     @PostMapping("/search")
     public Result search(@RequestBody final Map<String, Object> param) {
         PageHelper.startPage((Integer) param.get("page"), (Integer) param.get("size"));
-        final List<AccountWithRole> list;
-        if (param.get("roleName").equals("")) {
-            list = this.accountService.listAllWithRole();
-        } else {
-            list = this.accountService.findWithRoleBy(param);
-        }
+        final List<AccountWithRole> list = this.accountService.findWithRoleBy(param);
         final PageInfo<AccountWithRole> pageInfo = new PageInfo<>(list);
         return ResultGenerator.genOkResult(pageInfo);
     }
