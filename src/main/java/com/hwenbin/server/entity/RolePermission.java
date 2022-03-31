@@ -1,26 +1,31 @@
 package com.hwenbin.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.NoArgsConstructor;
 
 /**
  * @author hwb
  * @create 2022-03-14
  */
+@TableName("role_permission")
 @Data
-@Table(name = "role_permission")
+@NoArgsConstructor
+@AllArgsConstructor
 public class RolePermission {
 
+    /**
+     * 自增编号
+     */
+    @TableId
+    private Long id;
+
     /** 角色Id */
-    @Id
-    @Column(name = "role_id")
     private Long roleId;
 
     /** 权限Id */
-    @Column(name = "permission_id")
     private Long permissionId;
     
 }

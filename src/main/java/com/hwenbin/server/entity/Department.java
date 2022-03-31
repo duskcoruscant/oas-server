@@ -1,14 +1,24 @@
 package com.hwenbin.server.entity;
 
-import java.util.Date;
-import javax.persistence.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.hwenbin.server.core.entity.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class Department {
+/**
+ * @author hwb
+ * @create 2022-03-25
+ */
+@TableName("department")
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Department extends BaseEntity {
+
     /**
      * 部门Id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId
     private Long id;
 
     /**
@@ -17,86 +27,33 @@ public class Department {
     private String name;
 
     /**
-     * 创建时间
+     * 父部门id
      */
-    @Column(name = "create_time")
-    private Date createTime;
+    private Long parentId;
 
     /**
-     * 修改时间
+     * 显示顺序
      */
-    @Column(name = "update_time")
-    private Date updateTime;
+    private Integer sort;
 
     /**
-     * 获取部门Id
-     *
-     * @return id - 部门Id
+     * 负责人id
      */
-    public Long getId() {
-        return id;
-    }
+    private Long leaderEmpId;
 
     /**
-     * 设置部门Id
-     *
-     * @param id 部门Id
+     * 联系电话
      */
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private String phone;
 
     /**
-     * 获取部门名称
-     *
-     * @return name - 部门名称
+     * 邮箱
      */
-    public String getName() {
-        return name;
-    }
+    private String email;
 
     /**
-     * 设置部门名称
-     *
-     * @param name 部门名称
+     * 部门状态（0正常 1停用）
      */
-    public void setName(String name) {
-        this.name = name;
-    }
+    private Integer status;
 
-    /**
-     * 获取创建时间
-     *
-     * @return create_time - 创建时间
-     */
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    /**
-     * 设置创建时间
-     *
-     * @param createTime 创建时间
-     */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    /**
-     * 获取修改时间
-     *
-     * @return update_time - 修改时间
-     */
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    /**
-     * 设置修改时间
-     *
-     * @param updateTime 修改时间
-     */
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

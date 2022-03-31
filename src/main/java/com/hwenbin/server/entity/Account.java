@@ -1,24 +1,23 @@
 package com.hwenbin.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.sql.Timestamp;
 
 /**
  * @author hwb
  * @create 2022-03-14
  */
+@TableName("account")
 @Data
 public class Account {
 
     /**
-     * 用户Id
+     * 员工Id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId
     private Long id;
 
     /**
@@ -29,7 +28,7 @@ public class Account {
     /**
      * 用户名
      */
-    private String name;
+    private String nickname;
 
     /**
      * 密码

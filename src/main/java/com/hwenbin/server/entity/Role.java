@@ -1,44 +1,56 @@
 package com.hwenbin.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.hwenbin.server.core.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Timestamp;
 
 /**
  * @author hwb
  * @create 2022-03-14
  */
+@TableName("role")
 @Data
-public class Role {
+@EqualsAndHashCode(callSuper = true)
+public class Role extends BaseEntity {
 
     /**
      * 角色Id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId
     private Long id;
 
     /**
      * 角色名称
      */
-    @NotEmpty(message = "角色名不能为空")
     private String name;
 
     /**
-     * 创建时间
+     * 角色权限字符串
      */
-    @Column(name = "create_time")
-    private Timestamp createTime;
+    private String code;
 
     /**
-     * 修改时间
+     * 显示顺序
      */
-    @Column(name = "update_time")
-    private Timestamp updateTime;
+    private Integer sort;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 角色状态
+     */
+    private Integer status;
+
+    /**
+     * 角色类型 0内置，1自定义
+     */
+    private Integer type;
 
 }

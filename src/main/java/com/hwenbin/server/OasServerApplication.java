@@ -9,7 +9,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import tk.mybatis.spring.annotation.MapperScan;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -24,7 +23,6 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableEncryptableProperties
 @EnableTransactionManagement
-@MapperScan(basePackages = ProjectConstant.MAPPER_PACKAGE)
 @ServletComponentScan(basePackages = ProjectConstant.FILTER_PACKAGE)
 public class OasServerApplication extends SpringBootServletInitializer {
 

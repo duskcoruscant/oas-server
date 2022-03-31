@@ -1,7 +1,7 @@
 package com.hwenbin.server.util;
 
 import com.hwenbin.server.core.exception.ServiceException;
-import com.hwenbin.server.core.response.ResultCode;
+import com.hwenbin.server.core.web.response.ResultCode;
 
 /**
  * 断言工具

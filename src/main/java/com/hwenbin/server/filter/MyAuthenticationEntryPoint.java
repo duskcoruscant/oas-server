@@ -1,7 +1,7 @@
 package com.hwenbin.server.filter;
 
-import com.hwenbin.server.core.response.ResultCode;
-import com.hwenbin.server.core.response.ResultGenerator;
+import com.hwenbin.server.core.web.response.ResultCode;
+import com.hwenbin.server.core.web.response.ResultGenerator;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

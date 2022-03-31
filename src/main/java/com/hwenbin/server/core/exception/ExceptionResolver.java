@@ -1,8 +1,8 @@
 package com.hwenbin.server.core.exception;
 
-import com.hwenbin.server.core.response.Result;
-import com.hwenbin.server.core.response.ResultCode;
-import com.hwenbin.server.core.response.ResultGenerator;
+import com.hwenbin.server.core.web.response.CommonResult;
+import com.hwenbin.server.core.web.response.ResultCode;
+import com.hwenbin.server.core.web.response.ResultGenerator;
 import com.hwenbin.server.util.UrlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 /**
- * 统一异常处理 对于业务异常：返回头 Http 状态码一律使用500，避免浏览器缓存，在响应 Result 中指明异常的状态码 code
+ * 统一异常处理 对于业务异常：返回头 Http 状态码一律使用500，避免浏览器缓存，在响应 CommonResult 中指明异常的状态码 code
  *
  * @author hwb
  * @create 2022-03-14
@@ -34,7 +34,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ConstraintViolationException.class)
-    public Result validatorException(final ConstraintViolationException e) {
+    public CommonResult validatorException(final ConstraintViolationException e) {
         final String msg =
                 e.getConstraintViolations().stream()
                         .map(ConstraintViolation::getMessage)
@@ -47,7 +47,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ServiceException.class})
-    public Result serviceException(final ServiceException e) {
+    public CommonResult serviceException(final ServiceException e) {
         log.error("==> 服务异常: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(e.getResultCode(), e.getMessage());
@@ -55,7 +55,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ResourcesNotFoundException.class})
-    public Result resourcesException(final Throwable e) {
+    public CommonResult resourcesException(final Throwable e) {
         log.error("==> 资源异常: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(ResultCode.FIND_FAILED);
@@ -63,7 +63,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public Result databaseException(final Throwable e) {
+    public CommonResult databaseException(final Throwable e) {
         log.error("==> 数据库异常: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(ResultCode.DATABASE_EXCEPTION);
@@ -71,7 +71,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
-    public Result authException(final Throwable e) {
+    public CommonResult authException(final Throwable e) {
         log.error("==> 身份验证异常: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(ResultCode.UNAUTHORIZED_EXCEPTION);
@@ -79,7 +79,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler({AccessDeniedException.class, UsernameNotFoundException.class})
-    public Result accountException(final Throwable e) {
+    public CommonResult accountException(final Throwable e) {
         log.error("==> 账户异常: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(e.getMessage());
@@ -87,7 +87,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Result apiNotFoundException(final Throwable e, final HttpServletRequest request) {
+    public CommonResult apiNotFoundException(final Throwable e, final HttpServletRequest request) {
         log.error("==> API不存在: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(
@@ -96,7 +96,7 @@ public class ExceptionResolver {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Result globalException(final HttpServletRequest request, final Throwable e) {
+    public CommonResult globalException(final HttpServletRequest request, final Throwable e) {
         log.error("==> 全局异常: {}", e.getMessage());
         e.printStackTrace();
         return ResultGenerator.genFailedResult(

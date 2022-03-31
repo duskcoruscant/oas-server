@@ -1,30 +1,34 @@
 package com.hwenbin.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.NoArgsConstructor;
 
 /**
  * @author hwb
  * @create 2022-03-14
  */
 @Data
-@Table(name = "account_role")
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName("account_role")
 public class AccountRole {
+
+    /**
+     * 自增编号
+     */
+    private Long id;
 
     /**
      * 用户Id
      */
-    @Id
-    @Column(name = "account_id")
     private Long accountId;
 
     /**
      * 角色Id
      */
-    @Column(name = "role_id")
     private Long roleId;
 
 }

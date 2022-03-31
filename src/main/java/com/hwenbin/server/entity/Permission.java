@@ -1,38 +1,36 @@
 package com.hwenbin.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * @author hwb
  * @create 2022-03-14
  */
+@TableName("permission")
 @Data
 public class Permission {
 
     /**
-     * 权限Id
+     * 权限id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId
     private Long id;
 
     /**
-     * 权限对应的资源
+     * 权限名称
      */
-    private String resource;
+    private String name;
 
     /**
-     * 权限的代码/通配符,对应代码中@hasAuthority(xx)
+     * 权限标识,对应代码中@hasAuthority(xx)
      */
     private String code;
 
     /**
-     * 对应的资源操作
+     * 父权限id
      */
-    private String handle;
+    private Long parentId;
 
 }

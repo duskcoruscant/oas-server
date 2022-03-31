@@ -61,6 +61,16 @@ public final class ProjectConstant {
     /**
      * Mapper 插件基础接口的完全限定名
      */
-    public static final String MAPPER_INTERFACE_REFERENCE = BASE_PACKAGE + ".core.mapper.MyMapper";
+    public static final String MAPPER_INTERFACE_REFERENCE = BASE_PACKAGE + ".core.mapper.MyCommonMapper";
+
+    /**
+     * 时间转换 年-月-日 时:分:秒
+     */
+    public static final String FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * 时间转换 年-月-日 时:分:秒
+     */
+    public static final String FORMAT_YEAR_MONTH_DAY = "yyyy-MM-dd";
 
 }

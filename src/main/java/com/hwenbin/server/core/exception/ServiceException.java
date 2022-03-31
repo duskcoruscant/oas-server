@@ -1,6 +1,6 @@
 package com.hwenbin.server.core.exception;
 
-import com.hwenbin.server.core.response.ResultCode;
+import com.hwenbin.server.core.web.response.ResultCode;
 
 /**
  * Service 异常

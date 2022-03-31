@@ -1,6 +1,8 @@
 package com.hwenbin.server.service.impl;
 
-import com.hwenbin.server.core.service.AbstractService;
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hwenbin.server.dto.PermissionDTO;
 import com.hwenbin.server.entity.Permission;
 import com.hwenbin.server.mapper.PermissionMapper;
 import com.hwenbin.server.service.PermissionService;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author hwb
@@ -16,20 +19,19 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class PermissionServiceImpl extends AbstractService<Permission>
+public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permission>
         implements PermissionService {
 
     @Resource
     private PermissionMapper permissionMapper;
 
     @Override
-    public List<com.hwenbin.server.entity.Resource> listResourceWithHandle() {
-        return this.permissionMapper.listResourceWithHandle();
-    }
-
-    @Override
-    public List<com.hwenbin.server.entity.Resource> listRoleWithResourceByRoleId(Long roleId) {
-        return this.permissionMapper.listRoleWithResourceByRoleId(roleId);
+    public List<PermissionDTO> getAllPermissionList() {
+        return permissionMapper.selectList().stream().map(permission -> {
+            PermissionDTO dto = new PermissionDTO();
+            BeanUtil.copyProperties(permission, dto);
+            return dto;
+        }).collect(Collectors.toList());
     }
 
 }

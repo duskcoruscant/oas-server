@@ -35,33 +35,43 @@ jasypt.encryptor:
   property:
     detector-bean: myEncryptablePropertyDetector
 
-mybatis:
-  # 存放实体的位置
-  type-aliases-package: com.hwenbin.server.entity
-  # 存放 mapper 映射文件的位置
-  mapper-locations: classpath:mapper/*.xml
+# MyBatis Plus 的配置项
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true # 虽然默认为 true ，但是还是显示去指定下。
+  global-config:
+    db-config:
+      id-type: AUTO # 自增 ID
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 
-mapper:
-  # 多个接口时逗号隔开
-  mappers: com.hwenbin.server.core.mapper.MyMapper
-  # insert 和 update 中，判断字符串类型 != ''
-  not-empty: false
-  # 取回主键的方式
-  identity: MYSQL
+#mybatis:
+#  # 存放实体的位置
+#  type-aliases-package: com.hwenbin.server.entity
+#  # 存放 mapper 映射文件的位置
+#  mapper-locations: classpath:mapper/*.xml
+#
+#mapper:
+#  # 多个接口时逗号隔开
+#  mappers: com.hwenbin.server.core.mapper.MyCommonMapper
+#  # insert 和 update 中，判断字符串类型 != ''
+#  not-empty: false
+#  # 取回主键的方式
+#  identity: MYSQL
 
-# 分页插件
-# https://github.com/pagehelper/Mybatis-PageHelper/blob/master/wikis/zh/HowToUse.md
-pagehelper:
-  # pageSize=0 时查出所有结果，相当于没分页
-  page-size-zero: true
-  # 数据库方言
-  helperDialect: mysql
-  # 分页合理化
-  # pageNum <= 0 时会查询第一页
-  # pageNum > pages（超过总数时），会查询最后一页
-  reasonable: true
-  # 支持通过 Mapper 接口参数来传递分页参数
-  supportMethodsArguments: true
+## 分页插件
+## https://github.com/pagehelper/Mybatis-PageHelper/blob/master/wikis/zh/HowToUse.md
+#pagehelper:
+#  # pageSize=0 时查出所有结果，相当于没分页
+#  page-size-zero: true
+#  # 数据库方言
+#  helperDialect: mysql
+#  # 分页合理化
+#  # pageNum <= 0 时会查询第一页
+#  # pageNum > pages（超过总数时），会查询最后一页
+#  reasonable: true
+#  # 支持通过 Mapper 接口参数来传递分页参数
+#  supportMethodsArguments: true
 
 # 日志
 #logging:

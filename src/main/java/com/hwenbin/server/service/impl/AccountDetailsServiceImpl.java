@@ -35,7 +35,7 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
         // 角色
         authorities.add(new SimpleGrantedAuthority(accountWithRolePermission.getRoleName()));
         return new org.springframework.security.core.userdetails.User(
-                accountWithRolePermission.getName(), "", authorities);
+                accountWithRolePermission.getNickname(), "", authorities);
     }
 
 }

@@ -3,7 +3,6 @@ package com.hwenbin.server.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -17,7 +16,6 @@ public class AccountWithRolePermission extends AccountWithRole {
     /**
      * 用户的角色对应的权限code
      */
-    @Transient
     private List<String> permissionCodeList;
 
 }

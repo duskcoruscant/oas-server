@@ -1,42 +1,31 @@
 package com.hwenbin.server.service;
 
-import com.hwenbin.server.core.service.Service;
-import com.hwenbin.server.dto.AccountDto;
-import com.hwenbin.server.dto.AccountWithRole;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.hwenbin.server.dto.AccountDTO;
 import com.hwenbin.server.dto.AccountWithRolePermission;
 import com.hwenbin.server.entity.Account;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author hwb
  * @create 2022-03-14
  */
-public interface AccountService extends Service<Account> {
+public interface AccountService extends IService<Account> {
 
     /**
-     * 保存用户
-     *
-     * @param accountDto 用户
+     * 获取 token
+     * @param name nickname
+     * @return token
      */
-    void save(AccountDto accountDto);
+    String getToken(String name);
 
     /**
-     * 获取所有用户以及对应角色
-     *
-     * @return 用户列表
+     * 注册账户
+     * @param accountDto 账户信息
      */
-    List<AccountWithRole> listAllWithRole();
+    void register(AccountDTO accountDto);
 
-    /**
-     * 按条件查询用户
-     *
-     * @param params 参数
-     * @return 用户列表
-     */
-    List<AccountWithRole> findWithRoleBy(final Map<String, Object> params);
+    String login(Account account);
 
     /**
      * 按条件查询用户信息
@@ -59,9 +48,9 @@ public interface AccountService extends Service<Account> {
     /**
      * 按用户名更新最后一次登录时间
      *
-     * @param name 用户名
+     * @param nickname 用户名
      */
-    void updateLoginTimeByName(String name);
+    void updateLoginTimeByName(String nickname);
 
     /**
      * 验证用户密码
@@ -70,6 +59,13 @@ public interface AccountService extends Service<Account> {
      * @param encodedPassword 加密后的密码
      * @return boolean
      */
-    boolean verifyPassword(String rawPassword, String encodedPassword);
+    Boolean verifyPassword(String rawPassword, String encodedPassword);
+
+    /**
+     * 更新自己的资料
+     * @param account 更新的账户信息
+     * @return token
+     */
+    String updateMe(Account account);
 
 }
