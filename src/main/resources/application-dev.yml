@@ -1,11 +1,7 @@
 server:
-  port: 8080
+  port: 8088
 
 spring:
-  devtools:
-    restart:
-      # 修改代码后自动重启
-      enabled: true
   # 数据源（应该全部加密）
   datasource:
     # 连接，注意各个配置，尤其是要一次性执行多条 SQL 时，要 allowMultiQueries=true

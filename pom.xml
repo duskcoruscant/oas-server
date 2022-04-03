@@ -111,13 +111,6 @@
             <version>${spring-security-test.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- 热部署 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <!-- optional=true，依赖不会传递，该项目依赖devtools，之后依赖该项目的子项目要使用devtools，需重新引入 -->
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>

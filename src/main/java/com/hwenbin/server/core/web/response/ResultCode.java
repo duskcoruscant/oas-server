@@ -37,9 +37,15 @@ public enum ResultCode {
     LOGIN_RELATED_EMPLOYEE_STATUS_DISABLE(2010, "当前账户绑定员工状态为disable，不允许登录"),
 
     /*
-    员工
+    员工 + 考勤
      */
     EMP_NOT_FOUND(2100, "当前操作的员工不存在"),
+
+    EMP_TODAY_HAS_CLOCKED_IN(2101, "该员工今日已签到过"),
+
+    EMP_TODAY_HAS_NOT_CLOCKED_IN(2102, "该员工今日还没有签到"),
+
+    EMP_TODAY_HAS_CLOCKED_OUT(2103, "该员工今日已经签退过"),
 
     /*
     部门
