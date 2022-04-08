@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.RecycleFileMapper">
+
+    <select id="pageQuery" resultType="com.hwenbin.server.dto.RecycleFileDTO">
+        SELECT
+            rf.id, rf.deleted_time, f.name, f.type, f.size
+        FROM
+            recycle_file rf
+            left join file f
+            on rf.file_id = f.id
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

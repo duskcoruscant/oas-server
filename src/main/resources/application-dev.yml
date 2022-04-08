@@ -39,6 +39,24 @@ spring:
       max-idle: 8
       # 连接池中的最小空闲连接
       min-idle: 0
+  # 上传下载
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+# 文件服务器
+minio:
+  endpoint: http://192.168.245.66:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  file-bucket-name: files
+
+# 自定义线程池参数
+customize-thread-pool:
+  core-pool-size: 5
+  maximum-pool-size: 10
 
 logging:
   # 日志级别

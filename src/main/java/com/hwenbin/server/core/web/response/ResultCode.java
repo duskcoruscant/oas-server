@@ -82,7 +82,12 @@ public enum ResultCode {
 
     ROLE_CODE_DUPLICATE(2402, "已经存在该标识的角色"),
 
-    ROLE_TYPE_IS_BUILTIN_NOT_SUPPORT_CHANGE(2402, "当前操作的角色为系统内置角色，不允许变更"),
+    ROLE_TYPE_IS_BUILTIN_NOT_SUPPORT_CHANGE(2403, "当前操作的角色为系统内置角色，不允许变更"),
+
+    /**
+     * 文件
+     */
+    FILE_NOT_FOUND(2500, "文件不存在或已被删除"),
 
     /*
      * 原有类异常

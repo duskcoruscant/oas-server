@@ -73,4 +73,26 @@ public final class ProjectConstant {
      */
     public static final String FORMAT_YEAR_MONTH_DAY = "yyyy-MM-dd";
 
+    public static final String FORMAT_YEAR_MONTH_DAY_WITH_FILE_SEPARATOR = "/yyyy/MM/dd/";
+
+    /**
+     * 文件夹
+     */
+    public static final String FOLDER = "文件夹";
+
+    /**
+     * 文件服务器部署在Linux，文件分割符只识别 “/”
+     */
+    public static final String FILE_SEPARATOR = "/";
+
+    /**
+     * 个人文件存放的根路径
+     */
+    public static final String PERSONAL_FILE_ROOT_PATH = "personal" + FILE_SEPARATOR;
+
+    /**
+     * 共享文件存放的根路径
+     */
+    public static final String SHARE_FILE_ROOT_PATH = "share" + FILE_SEPARATOR;
+
 }

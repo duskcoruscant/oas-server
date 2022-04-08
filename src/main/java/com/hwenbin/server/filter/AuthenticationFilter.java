@@ -54,7 +54,7 @@ public class AuthenticationFilter implements Filter {
                 UrlUtils.getMappingUrl(request));
 
         // 设置允许多个域名请求
-        String[] allowDomains = {"http://localhost:9999", "http://localhost:8080"};
+        String[] allowDomains = {"http://localhost:9999", "http://localhost:8088"};
         Set<String> allowOrigins = new HashSet<>(Arrays.asList(allowDomains));
         String origin = request.getHeader("Origin");
         if (allowOrigins.contains(origin)) {

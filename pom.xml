@@ -30,13 +30,8 @@
         <commons-codec.version>1.12</commons-codec.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-<!--        <guava.version>28.0-jre</guava.version>-->
         <hutool.version>5.6.1</hutool.version>
         <bcprov.version>1.62</bcprov.version>
-<!--        <mybatis.version>1.3.2</mybatis.version>-->
-<!--        <mybatis-generator.version>1.3.7</mybatis-generator.version>-->
-<!--        <mapper.version>4.0.3</mapper.version>-->
-<!--        <pagehelper.version>1.2.12</pagehelper.version>-->
         <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
         <fastjson.version>1.2.58</fastjson.version>
         <druid.version>1.1.18</druid.version>
@@ -44,6 +39,7 @@
         <jasypt.version>2.1.0</jasypt.version>
         <freemarker.version>2.3.28</freemarker.version>
         <lombok.version>1.18.8</lombok.version>
+        <minio.version>7.1.0</minio.version>
     </properties>
 
     <dependencies>
@@ -149,11 +145,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.google.guava</groupId>-->
-<!--            <artifactId>guava</artifactId>-->
-<!--            <version>${guava.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
@@ -186,44 +177,12 @@
             <version>${jasypt.version}</version>
         </dependency>
 
-<!--        &lt;!&ndash; pagehelper &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.pagehelper</groupId>-->
-<!--            <artifactId>pagehelper-spring-boot-starter</artifactId>-->
-<!--            <version>${pagehelper.version}</version>-->
-<!--        </dependency>-->
-
         <!-- MyBatis-Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-<!--        &lt;!&ndash; mybatis及插件依赖 &ndash;&gt;-->
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.mybatis.spring.boot</groupId>-->
-<!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
-<!--            <version>${mybatis.version}</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; mapper &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>tk.mybatis</groupId>-->
-<!--            <artifactId>mapper</artifactId>-->
-<!--            <version>${mapper.version}</version>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; 代码生成器依赖 &ndash;&gt;-->
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.freemarker/freemarker &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.freemarker</groupId>-->
-<!--            <artifactId>freemarker</artifactId>-->
-<!--            <version>${freemarker.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.mybatis.generator</groupId>-->
-<!--            <artifactId>mybatis-generator-core</artifactId>-->
-<!--            <version>${mybatis-generator.version}</version>-->
-<!--        </dependency>-->
 
         <!-- https://projectlombok.org/ -->
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -233,6 +192,14 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -258,6 +225,20 @@
                         <id>repackage</id>
                         <goals>
                             <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>1.3.70</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
                         </goals>
                     </execution>
                 </executions>

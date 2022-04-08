@@ -4,32 +4,31 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 角色类型枚举
- *
  * @author hwb
- * @create 2022-03-31
+ * @date 2022/04/06 15:39
  */
 @Getter
 @AllArgsConstructor
-public enum RoleTypeEnum {
+public enum FileShareTypeEnum {
 
     /**
-     * 内置角色，不允许变更
+     * 非共享文件
      */
-    BUILTIN(0, "内置"),
+    NONE_SHARED(0, "非共享文件"),
+
     /**
-     * 自定义角色，管理员新增的
+     * 共享文件
      */
-    CUSTOM(1, "自定义")
+    IS_SHARED(1, "共享文件")
     ;
 
     /**
      * 类型值
      */
-    private final Integer type;
+    private final Integer value;
 
     /**
-     * 类型名
+     * 类型名称
      */
     private final String name;
 
