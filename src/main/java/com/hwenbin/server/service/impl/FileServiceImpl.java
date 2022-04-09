@@ -1,6 +1,8 @@
 package com.hwenbin.server.service.impl;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -15,6 +17,7 @@ import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.core.web.response.ResultCode;
 import com.hwenbin.server.entity.File;
 import com.hwenbin.server.enums.DeleteStatusEnum;
+import com.hwenbin.server.enums.FileShareTypeEnum;
 import com.hwenbin.server.mapper.FileMapper;
 import com.hwenbin.server.service.FileService;
 import com.hwenbin.server.service.RecycleFileService;
@@ -22,6 +25,8 @@ import com.hwenbin.server.util.AssertUtils;
 import com.hwenbin.server.util.ThreadPoolUtil;
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,12 +42,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.hwenbin.server.enums.FileShareTypeEnum.NONE_SHARED;
 
@@ -66,9 +67,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
     @Value("${minio.file-bucket-name}")
     private String bucketName;
-
-    @Resource
-    private ThreadPoolUtil threadPoolUtil;
 
     @Override
     public PageResult<File> pageQuery(PageQueryForFileReq req) {
@@ -136,12 +134,14 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         }
 
+        Date date = new Date();
+        // 文件名前加上时间戳，解决前端展示不同文件夹的相同文件名冲突覆盖问题（由于当天上传的文件会在同一个Linux文件夹下）
+        String basePath = empId + DateUtil.format(date, ProjectConstant.FORMAT_YEAR_MONTH_DAY_WITH_FILE_SEPARATOR)
+                + DateUtil.beginOfDay(date).between(date, DateUnit.MS);
         List<File> fileList = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             String filename = multipartFile.getOriginalFilename();
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern(ProjectConstant.FORMAT_YEAR_MONTH_DAY_WITH_FILE_SEPARATOR);
-            String filePath = empId + LocalDate.now().format(formatter) + filename;
+            String filePath = basePath + filename;
             File file = new File();
             file.setEmpId(empId);
             file.setParentId(parentId);
@@ -170,7 +170,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     }
 
     @Override
-    public void removeFileToRecycleBin(Long id) {
+    public void removeFileToRecycleBin(Long id, Long operatorId) {
         // 校验文件是否存在
         File file = fileMapper.selectById(id);
         AssertUtils.asserts(file != null, ResultCode.FILE_NOT_FOUND);
@@ -183,23 +183,61 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                         .set(File::getDeletedBatchNum, deletedBatchNum)
                         .eq(File::getId, id)
         );
-        // 在回收站中创建记录
+        // 在回收站中创建记录，operatorId不为空表示删除操作发生在共享文件，此时放入操作人的回收站中
         // 已经判断 file != null
-        recycleFileService.addRecycleFile(id, file.getEmpId(), deletedBatchNum);
+        recycleFileService.addRecycleFile(id, operatorId != null ? operatorId : file.getEmpId(), deletedBatchNum);
         // 如果为文件夹，需要逻辑删除其下的所有内容（多级），并设置删除批次号
         if (file.isFolder()) {
-            markDeleteAllChildByFileId(id, deletedBatchNum, file.getEmpId());
+            markDeleteAllChildByFileId(id, deletedBatchNum, file.getEmpId(), file.isShare());
         }
     }
 
     @Override
-    public Set<Long> getAllChildFileId(Long id, Long empId) {
-        // 拿到创建人，查询其名下所有文件
-        List<File> fileList = fileMapper.selectList(File::getEmpId, empId);
+    public Set<Long> getAllChildFileId(Long id, Long empId, Boolean isShare) {
+        List<File> fileList;
+        if (isShare) {
+            // 获取所有共享文件
+            fileList = fileMapper.selectList(File::getIsShared, FileShareTypeEnum.IS_SHARED.getValue());
+        } else {
+            // 拿到创建人，查询其名下所有文件
+            fileList = fileMapper.selectList(File::getEmpId, empId);
+        }
         // 递归构造id文件夹下的文件列表（多级）
         Set<Long> childIds = new HashSet<>();
         recursive(fileList, childIds, id, Integer.MAX_VALUE);
         return childIds;
+    }
+
+    @Override
+    public void realDeleteByBatchNums(Collection<String> deletedBatchNums) throws IOException, InvalidKeyException,
+            InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException,
+            InternalException, XmlParserException, InvalidBucketNameException, ErrorResponseException {
+        // 获取所有需要删除的文件路径
+        List<File> fileList = fileMapper.selectListByDeleteBatchNums(deletedBatchNums);
+        Iterable<Result<DeleteError>> results =
+                minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(
+                        fileList.stream().filter(file -> file != null && !file.isFolder())
+                                .map(file -> new DeleteObject(file.getPath()))
+                                .collect(Collectors.toList())
+                ).build());
+        for (Result<DeleteError> result : results) {
+            final DeleteError deleteError = result.get();
+            log.error(
+                    "Error in deleting object " + deleteError.objectName() + "; " + deleteError.message()
+            );
+
+        }
+    }
+
+    @Override
+    public void recoveryByDeleteBatchNum(Collection<String> deletedBatchNums) {
+        fileMapper.updateDeleteStatusByDeleteBatchNums(deletedBatchNums);
+        fileMapper.update(null,
+                Wrappers.<File>lambdaUpdate()
+                        .set(File::getIsDeleted, DeleteStatusEnum.NONE_DELETED.getValue())
+                        .set(File::getDeletedBatchNum, null)
+                        .in(File::getDeletedBatchNum, deletedBatchNums)
+        );
     }
 
     /**
@@ -226,14 +264,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
      * @param fileId 父文件夹id
      * @param deletedBatchNum 删除批次号
      * @param empId 创建人
+     * @param isShare 是否共享
      */
-    private void markDeleteAllChildByFileId(Long fileId, String deletedBatchNum, Long empId) {
+    private void markDeleteAllChildByFileId(Long fileId, String deletedBatchNum, Long empId, Boolean isShare) {
         ThreadPoolUtil.submit(() -> {
             fileMapper.update(null,
                     Wrappers.<File>lambdaUpdate()
                             .set(File::getIsDeleted, DeleteStatusEnum.DELETED.getValue())
                             .set(File::getDeletedBatchNum, deletedBatchNum)
-                            .in(File::getId, getAllChildFileId(fileId, empId))
+                            .in(File::getId, getAllChildFileId(fileId, empId, isShare))
             );
         });
     }

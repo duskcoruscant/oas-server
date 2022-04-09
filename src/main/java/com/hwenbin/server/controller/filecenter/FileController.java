@@ -13,6 +13,7 @@ import io.minio.errors.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -68,11 +69,12 @@ public class FileController {
     /**
      * 删除文件/文件夹 —— 放入回收站
      * @param id 文件id
+     * @param operatorId 操作人
      * @return true
      */
-    @DeleteMapping("/{id}")
-    public CommonResult<Boolean> delete(@PathVariable Long id) {
-        fileService.removeFileToRecycleBin(id);
+    @DeleteMapping
+    public CommonResult<Boolean> delete(@RequestParam Long id, @Nullable @RequestParam Long operatorId) {
+        fileService.removeFileToRecycleBin(id, operatorId);
         return ResultGenerator.genOkResult(true);
     }
 

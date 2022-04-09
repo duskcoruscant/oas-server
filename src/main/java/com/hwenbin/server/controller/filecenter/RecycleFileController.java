@@ -6,13 +6,14 @@ import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.core.web.response.ResultGenerator;
 import com.hwenbin.server.dto.RecycleFileDTO;
 import com.hwenbin.server.service.RecycleFileService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.minio.errors.*;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 回收站控制器
@@ -37,6 +38,42 @@ public class RecycleFileController {
     public CommonResult<PageResult<RecycleFileDTO>> pageQueryForRecycleFile(@RequestParam Long empId,
                                                                             @Valid PageParam pageParam) {
         return ResultGenerator.genOkResult(recycleFileService.pageQuery(empId, pageParam));
+    }
+
+    /**
+     * 彻底删除 文件/文件夹
+     * @param id 回收站记录id
+     * @return true
+     */
+    @DeleteMapping("/{id}")
+    public CommonResult<Boolean> deleteById(@PathVariable Long id) throws IOException, InvalidResponseException,
+            InvalidKeyException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException,
+            InvalidBucketNameException, InsufficientDataException, ErrorResponseException {
+        recycleFileService.deleteById(id);
+        return ResultGenerator.genOkResult(true);
+    }
+
+    /**
+     * 清空回收站
+     * @return true
+     */
+    @DeleteMapping("/deleteAll")
+    public CommonResult<Boolean> deleteAll() throws IOException, InvalidResponseException, InvalidKeyException,
+            NoSuchAlgorithmException, ServerException, InternalException, XmlParserException,
+            InvalidBucketNameException, InsufficientDataException, ErrorResponseException {
+        recycleFileService.deleteAll();
+        return ResultGenerator.genOkResult(true);
+    }
+
+    /**
+     * 恢复文件
+     * @param id 回收站记录id
+     * @return true
+     */
+    @PutMapping("/{id}")
+    public CommonResult<Boolean> recoveryById(@PathVariable Long id) {
+        recycleFileService.recoveryById(id);
+        return ResultGenerator.genOkResult(true);
     }
 
 }

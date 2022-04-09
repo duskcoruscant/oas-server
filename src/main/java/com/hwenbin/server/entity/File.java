@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.hwenbin.server.core.constant.ProjectConstant;
 import com.hwenbin.server.core.entity.BaseEntity;
+import com.hwenbin.server.enums.FileShareTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -72,6 +73,13 @@ public class File extends BaseEntity {
      */
     public Boolean isFolder() {
         return ProjectConstant.FOLDER.equals(this.type);
+    }
+
+    /**
+     * 是否是共享
+     */
+    public Boolean isShare() {
+        return FileShareTypeEnum.IS_SHARED.getValue().equals(this.isShared);
     }
 
 }

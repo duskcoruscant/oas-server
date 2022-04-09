@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.FileMapper">
+
+    <select id="selectListByDeleteBatchNums" resultType="com.hwenbin.server.entity.File">
+        SELECT f.id, f.name, f.path, f.type, f.deleted_batch_num
+        FROM file f
+        WHERE deleted_batch_num IN
+              <foreach collection="deletedBatchNums" index="index" item="item" open="(" separator="," close=")">
+                  #{item}
+              </foreach>
+    </select>
+
+    <update id="updateDeleteStatusByDeleteBatchNums">
+        UPDATE file
+        SET is_deleted = 0, deleted_batch_num = null
+        WHERE deleted_batch_num IN
+            <foreach collection="deletedBatchNums" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </update>
+
+</mapper>
