@@ -149,4 +149,17 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return dbEmployee;
     }
 
+    @Override
+    public List<Employee> getDeptEnableEmpListByEmpId(Long empId) {
+        Employee employee = employeeMapper.selectById(empId);
+        List<Employee> list = employeeMapper.selectList(
+                new MyLambdaQueryWrapper<Employee>()
+                        .eq(Employee::getDeptId, employee.getDeptId())
+                        .eq(Employee::getStatus, CommonStatusEnum.ENABLE.getStatus())
+        );
+        // 过滤掉自己
+        list.remove(employee);
+        return list;
+    }
+
 }

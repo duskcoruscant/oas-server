@@ -89,6 +89,11 @@ public enum ResultCode {
      */
     FILE_NOT_FOUND(2500, "文件不存在或已被删除"),
 
+    /**
+     * 日志
+     */
+    WORK_LOG_NOT_FOUND(2600, "当前操作的日志不存在"),
+
     /*
      * 原有类异常
      */

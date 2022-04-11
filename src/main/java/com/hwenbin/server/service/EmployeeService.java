@@ -61,4 +61,11 @@ public interface EmployeeService extends IService<Employee> {
      */
     Employee getEmployeeById(Long id);
 
+    /**
+     * 展示id员工所在部门下所有 状态为 Enable 的员工
+     * @param empId 员工id
+     * @return 员工实体列表
+     */
+    List<Employee> getDeptEnableEmpListByEmpId(Long empId);
+
 }

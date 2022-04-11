@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.WorkLogSendMapper">
+
+    <select id="pageQuery" resultType="com.hwenbin.server.dto.WorkLogSendDTO">
+        SELECT
+            wls.id, wls.log_id, wls.send_emp_id, wl.type, wl.title, wl.today_content, wl.tomorrow_content,
+               wl.question, wl.create_emp_id, wl.create_time, wl.update_time, e.name AS create_emp_name
+        FROM
+            work_log_send wls
+                LEFT JOIN work_log wl ON wls.log_id = wl.id
+                LEFT JOIN employee e ON wl.create_emp_id = e.id
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

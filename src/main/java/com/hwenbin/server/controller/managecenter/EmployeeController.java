@@ -112,4 +112,14 @@ public class EmployeeController {
         return ResultGenerator.genOkResult(true);
     }
 
+    /**
+     * 展示id员工所在部门所有 状态为 Enable 的员工，用于下拉框选择
+     * @param empId 员工id
+     * @return 员工实体列表
+     */
+    @GetMapping("/listDeptEmpByEmpId/{empId}")
+    public CommonResult<List<Employee>> getDeptEnableEmpListByEmpId(@PathVariable Long empId) {
+        return ResultGenerator.genOkResult(employeeService.getDeptEnableEmpListByEmpId(empId));
+    }
+
 }
