@@ -86,8 +86,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // 对所有的请求都做权限校验
                 .authorizeRequests()
-                // 允许匿名 GET 请求
-                .antMatchers("/swagger-ui.html**", "/swagger-resources**", "/webjars/**", "/v2/**")
+                // 允许匿名 GET 请求，放过websocket
+                .antMatchers("/swagger-ui.html**", "/swagger-resources**", "/webjars/**", "/v2/**", "/websocket/**")
                 .permitAll()
                 // 允许匿名 POST 请求
                 .antMatchers(HttpMethod.POST, "/account", "/account/token")
