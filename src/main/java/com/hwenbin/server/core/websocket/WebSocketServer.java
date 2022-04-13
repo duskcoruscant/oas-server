@@ -1,11 +1,14 @@
 package com.hwenbin.server.core.websocket;
 
+import cn.hutool.core.collection.CollUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -40,6 +43,11 @@ public class WebSocketServer {
     private static ConcurrentMap<Long, Session> sessionPool = new ConcurrentHashMap<>();
 
     /**
+     * 存储消息，TODO ： 改为redis（或其他）存储
+     */
+    private static ConcurrentMap<Long, List<String>> messageMap = new ConcurrentHashMap<>();
+
+    /**
      * 连接建立成功调用的方法
      */
     @OnOpen
@@ -49,6 +57,12 @@ public class WebSocketServer {
         webSocketSet.add(this);
         sessionPool.put(accountId, session);
         log.info(accountId + " 已连接 \n 【websocket消息】有新的连接，当前在线人数为：" + webSocketSet.size());
+        List<String> messageList = messageMap.get(accountId);
+        if (CollUtil.isNotEmpty(messageList)) {
+            log.info("【websocket消息】发送存储消息 员工：" + accountId);
+            messageList.forEach(message -> sendMessageTo(accountId, message));
+            messageList.clear();
+        }
     }
 
     /**
@@ -93,7 +107,7 @@ public class WebSocketServer {
     }
 
     /**
-     * 此为单点消息
+     * 此为单点消息 TODO : 更改消息存储方式
      */
     public void sendMessageTo(Long accountId, String message) {
         log.info("【websocket消息】单点消息 to " + accountId + " :" + message);
@@ -104,6 +118,11 @@ public class WebSocketServer {
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
+        } else {
+            log.info("【websocket消息】员工 " + accountId + " 不在线，存储消息");
+            List<String> messageList = messageMap.getOrDefault(accountId, new ArrayList<>());
+            messageList.add(message);
+            messageMap.put(accountId, messageList);
         }
     }
 
