@@ -57,6 +57,7 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
         checkAddOrUpdate(positionDTO.getId(), positionDTO.getName(), positionDTO.getCode());
         final Position position = new Position();
         BeanUtil.copyProperties(positionDTO, position);
+        // TODO : 若状态发生变更，需考虑当前职位存在员工关联的情况处理
         positionMapper.updateById(position);
     }
 
@@ -69,6 +70,7 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
     @Override
     public void delete(Long id) {
         checkPositionExists(id);
+        // TODO : 若当前职位存在员工关联的情况处理
         positionMapper.deleteById(id);
     }
 

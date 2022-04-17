@@ -90,6 +90,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         AssertUtils.asserts(
                 this.count(new MyLambdaQueryWrapper<Department>().eq(Department::getParentId, id)) == 0,
                 ResultCode.DEPT_EXITS_CHILDREN);
+        // TODO ：考虑部门之下还有员工的情况
         this.removeById(id);
     }
 
