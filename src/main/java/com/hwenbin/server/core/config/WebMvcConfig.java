@@ -46,7 +46,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 // 保留空的字段
                 // SerializerFeature.WriteMapNullValue,
                 // Number null -> 0
-                SerializerFeature.WriteNullNumberAsZero,
+                // SerializerFeature.WriteNullNumberAsZero,
                 // 美化输出
                 SerializerFeature.PrettyFormat);
         converter.setFastJsonConfig(config);

@@ -113,7 +113,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         // 验证密码   // 已经判断dbAccount不为null，忽略提示
         AssertUtils.asserts(verifyPassword(account.getPassword(), dbAccount.getPassword()),
                 ResultCode.LOGIN_ERROR_PASSWORD);
-        // 若此时员工状态为禁用，则不允许登录
+        // 若此时员工状态为禁用，则不允许登录 TODO : 若员工不存在应提示已离职，不允许登录
         AssertUtils.asserts(
                 CommonStatusEnum.ENABLE.getStatus().equals(
                         employeeService.getEmployeeById(dbAccount.getId()).getStatus()),

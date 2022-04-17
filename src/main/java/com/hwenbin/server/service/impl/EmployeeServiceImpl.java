@@ -140,6 +140,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         final Employee dbEmployee = employeeMapper.selectById(id);
         AssertUtils.asserts(dbEmployee != null, ResultCode.EMP_NOT_FOUND);
         employeeMapper.deleteById(id);
+        // TODO ：关联账户的处理   考虑不删除账户，但是删除账户与角色关联记录
     }
 
     @Override

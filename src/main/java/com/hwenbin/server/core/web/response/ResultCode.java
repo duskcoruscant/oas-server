@@ -94,6 +94,21 @@ public enum ResultCode {
      */
     WORK_LOG_NOT_FOUND(2600, "当前操作的日志不存在"),
 
+    /**
+     * 会议室
+     */
+    CONFERENCE_ROOM_NOT_FOUND(2700, "当前操作的会议室不存在"),
+
+    CONFERENCE_ROOM_CODE_DUPLICATE(2701, "已经存在该编号的会议室"),
+
+    CONFERENCE_ROOM_ADDRESS_DUPLICATE(2702, "已经存在该地址的会议室"),
+
+    CONFERENCE_EQUIPMENT_NOT_FOUND(2703, "当前操作的会议室设备不存在"),
+
+    CONFERENCE_EQUIPMENT_CODE_DUPLICATE(2704, "已经存在该编号的设备"),
+
+    CONFERENCE_EQUIPMENT_USING_NOT_PERMIT_DELETE(2705, "该设备使用中，不允许删除"),
+
     /*
      * 原有类异常
      */
