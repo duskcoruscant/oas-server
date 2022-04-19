@@ -109,6 +109,11 @@ public enum ResultCode {
 
     CONFERENCE_EQUIPMENT_USING_NOT_PERMIT_DELETE(2705, "该设备使用中，不允许删除"),
 
+    /**
+     * 公文
+     */
+    MISSIVE_NOT_FOUND(2800, "当前操作的公文不存在"),
+
     /*
      * 原有类异常
      */

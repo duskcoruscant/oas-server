@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.MissiveMapper">
+
+    <!-- 分页查询 -->
+    <select id="pageQuery" resultType="com.hwenbin.server.dto.MissiveDTO">
+        select
+            m.id, m.name, m.type, m.secret_level, m.creator, m.create_time, m.updater, m.update_time,
+            pd.name as primary_send_dept_name, cd.name as copy_send_dept_name,
+            ad.name as author_dept_name, e.name as author_name
+        from
+            (select * from missive where is_deleted = 0) m
+                left join department pd on m.primary_send_dept_id = pd.id
+                left join department cd on m.copy_send_dept_id = cd.id
+                left join department ad on m.author_dept_id = ad.id
+                left join employee e on m.author_id = e.id
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

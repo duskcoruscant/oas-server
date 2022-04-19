@@ -163,4 +163,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return list;
     }
 
+    @Override
+    public Set<Long> getAllEmpIdByDeptId(List<Long> deptIds) {
+        return employeeMapper.selectList(
+                new MyLambdaQueryWrapper<Employee>()
+                        .select(Employee::getId)
+                        .in(Employee::getDeptId, deptIds)
+        ).stream().map(Employee::getId).collect(Collectors.toSet());
+    }
+
 }

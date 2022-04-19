@@ -9,6 +9,7 @@ import com.hwenbin.server.dto.EmployeeDTO;
 import com.hwenbin.server.entity.Employee;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author hwb
@@ -67,5 +68,12 @@ public interface EmployeeService extends IService<Employee> {
      * @return 员工实体列表
      */
     List<Employee> getDeptEnableEmpListByEmpId(Long empId);
+
+    /**
+     * 根据deptId获取所有员工id
+     * @param deptIds 部门id列表
+     * @return 员工id集合
+     */
+    Set<Long> getAllEmpIdByDeptId(List<Long> deptIds);
 
 }
