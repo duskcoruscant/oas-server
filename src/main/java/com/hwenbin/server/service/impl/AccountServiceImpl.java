@@ -15,6 +15,7 @@ import com.hwenbin.server.enums.CommonStatusEnum;
 import com.hwenbin.server.mapper.AccountMapper;
 import com.hwenbin.server.mapper.AccountRoleMapper;
 import com.hwenbin.server.mapper.PermissionMapper;
+import com.hwenbin.server.mapper.RoleMapper;
 import com.hwenbin.server.service.AccountService;
 import com.hwenbin.server.service.EmployeeService;
 import com.hwenbin.server.util.AssertUtils;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author hwb
@@ -44,6 +47,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
     @Resource
     private PermissionMapper permissionMapper;
+
+    @Resource
+    private RoleMapper roleMapper;
 
     @Resource
     private PasswordEncoder passwordEncoder;
@@ -170,6 +176,16 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if ("超级管理员".equals(account.getRoleName())) {
             // 超级管理员所有权限都有
             account.setPermissionCodeList(this.permissionMapper.listAllCode());
+        } else {
+            // 待优化
+            Set<Long> roleIdSet =
+                    this.accountRoleMapper.selectList("account_id", account.getId())
+                            .stream().map(AccountRole::getRoleId).collect(Collectors.toSet());
+            if (this.roleMapper.selectBatchIds(roleIdSet).stream().anyMatch(role -> "超级管理员".equals(role.getName()))) {
+                account.setRoleId(1L);
+                account.setRoleName("超级管理员");
+                account.setPermissionCodeList(this.permissionMapper.listAllCode());
+            }
         }
         return account;
     }
