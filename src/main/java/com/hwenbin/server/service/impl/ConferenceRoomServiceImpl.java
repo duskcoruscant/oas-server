@@ -15,8 +15,10 @@ import com.hwenbin.server.dto.ConferenceRoomDTO;
 import com.hwenbin.server.entity.ConferenceEquipmentEntity;
 import com.hwenbin.server.entity.ConferenceRoomEntity;
 import com.hwenbin.server.entity.ConferenceRoomEquipmentEntity;
+import com.hwenbin.server.enums.CommonStatusEnum;
 import com.hwenbin.server.enums.ConferenceEquipmentStatusEnum;
 import com.hwenbin.server.mapper.ConferenceEquipmentMapper;
+import com.hwenbin.server.mapper.ConferenceReservationMapper;
 import com.hwenbin.server.mapper.ConferenceRoomEquipmentMapper;
 import com.hwenbin.server.mapper.ConferenceRoomMapper;
 import com.hwenbin.server.service.ConferenceRoomService;
@@ -47,6 +49,9 @@ public class ConferenceRoomServiceImpl implements ConferenceRoomService {
 
     @Resource
     private ConferenceRoomEquipmentMapper conferenceRoomEquipmentMapper;
+
+    @Resource
+    private ConferenceReservationMapper conferenceReservationMapper;
 
     @Override
     public PageResult<ConferenceRoomDTO> pageQuery(PageQueryForConferenceRoomReq req) {
@@ -111,13 +116,23 @@ public class ConferenceRoomServiceImpl implements ConferenceRoomService {
     @Override
     public void update(ConferenceRoomDTO dto) {
         ConferenceRoomEntity dbEntity = checkConferenceRoomExists(dto.getId());
-        if (!dbEntity.getCode().equals(dto.getCode())) {
-            // 更改会议室编号需要校验唯一性
-            checkRoomCodeUnique(dto.getCode());
-        }
+        /* 4-24：不允许修改编号，若修改需要将会议预定表中的记录的roomCode字段一并更改 */
+        dto.setCode(null);
+        // if (!dbEntity.getCode().equals(dto.getCode())) {
+        //     // 更改会议室编号需要校验唯一性
+        //     checkRoomCodeUnique(dto.getCode());
+        // }
         if (!dbEntity.getAddress().equals(dto.getAddress())) {
             // 更改会议室地址需要校验唯一性
             checkRoomAddressUnique(dto.getAddress());
+        }
+        // 如果会议室状态从正常改变为停用，需要先校验该会议室下是否尚有未结束的会议，若有则不允许变更
+        if (!dbEntity.getStatus().equals(dto.getStatus()) &&
+                CommonStatusEnum.ENABLE.getStatus().equals(dbEntity.getStatus())) {
+            AssertUtils.asserts(
+                    !conferenceReservationMapper.checkStillNoneCompleteConferenceUnderRoom(dbEntity.getCode()),
+                    ResultCode.CONFERENCE_ROOM_STILL_NONE_COMPLETE_CONFERENCE
+            );
         }
         conferenceRoomMapper.updateById(dto);
         if (CollUtil.isNotEmpty(dto.getConferenceEquipmentIds())) {

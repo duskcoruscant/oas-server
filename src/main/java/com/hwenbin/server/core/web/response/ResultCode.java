@@ -103,11 +103,17 @@ public enum ResultCode {
 
     CONFERENCE_ROOM_ADDRESS_DUPLICATE(2702, "已经存在该地址的会议室"),
 
+    CONFERENCE_ROOM_STILL_NONE_COMPLETE_CONFERENCE(2712, "当前会议室下还有未结束的会议，不允许变更状态"),
+
     CONFERENCE_EQUIPMENT_NOT_FOUND(2703, "当前操作的会议室设备不存在"),
 
     CONFERENCE_EQUIPMENT_CODE_DUPLICATE(2704, "已经存在该编号的设备"),
 
     CONFERENCE_EQUIPMENT_USING_NOT_PERMIT_DELETE(2705, "该设备使用中，不允许删除"),
+
+    CONFERENCE_RESERVATION_NOT_FOUND(2710, "当前操作的会议预订记录不存在"),
+
+    CONFERENCE_RESERVATION_NOT_PERMIT_DELETE(2711, "当前操作的会议预订记录正在进行中或已结束，不允许取消"),
 
     /**
      * 公文

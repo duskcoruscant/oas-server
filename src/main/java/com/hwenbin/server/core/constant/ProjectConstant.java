@@ -75,6 +75,10 @@ public final class ProjectConstant {
 
     public static final String FORMAT_YEAR_MONTH_DAY_WITH_FILE_SEPARATOR = "/yyyy/MM/dd/";
 
+    public static final String FORMAT_YEAR_MONTH_DAY_WITH_FILE_SEPARATOR_INNER = "yyyy/MM/dd";
+
+    public static final String TWENTY_FOUR_CLOCK = "24:00";
+
     /**
      * 文件夹
      */

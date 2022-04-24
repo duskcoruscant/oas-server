@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.ConferenceReservationMapper">
+
+    <resultMap type="com.hwenbin.server.dto.ConferenceReservationDTO" id="reservationDTOMap">
+        <id property="id" column="id"/>
+        <result property="roomCode" column="room_code"/>
+        <result property="date" column="date"/>
+        <collection property="resTimes" ofType="com.hwenbin.server.dto.ConferenceReservationDTO$ReservationTime">
+            <result property="startTime" column="start_time"/>
+            <result property="endTime" column="end_time"/>
+            <result property="resEmpName" column="res_emp_name"/>
+        </collection>
+    </resultMap>
+
+    <!-- 会议预订页面分页查询 -->
+    <select id="pageQueryForReservation" resultMap="reservationDTOMap">
+        SELECT
+            croom.id, croom.code AS room_code, cres.date, cres.start_time, cres.end_time, e.name AS res_emp_name
+        FROM
+             (SELECT * FROM conference_room WHERE status = 0 AND is_deleted = 0) croom
+                LEFT JOIN (SELECT * FROM conference_reservation WHERE date = #{resDate} AND is_deleted = 0) cres
+                    ON croom.code = cres.room_code
+                LEFT JOIN employee e ON cres.res_emp_id = e.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <!-- 会议列表页面分页查询 -->
+    <select id="pageQueryForResHistory" resultType="com.hwenbin.server.entity.ConferenceReservationEntity">
+        SELECT
+            cr.id, cr.room_code, cr.date, cr.start_time, cr.end_time, cr.subject, cr.create_time, e.name AS res_emp_name
+        FROM
+            (SELECT * FROM conference_reservation
+                /* 当and/or前面写了注释时，where标签解析会判定and/or前面有内容，这种情况下不会对and/or进行删除，
+                   故where标签里的and/or前面只能使用xml文件的注释格式，不能使用java中的注释 */
+                <where>
+                    <!-- 若参数 processStatus 不为null，需要对会议状态进行筛选 -->
+                    <if test="processStatus != null">
+                        <!-- 筛选未开始的会议 -->
+                        <if test="processStatus == 1">
+                            CONCAT(date, ' ', start_time) > CURRENT_TIMESTAMP
+                        </if>
+                        <!-- 筛选进行中的会议 -->
+                        <if test="processStatus == 2">
+                            CURRENT_DATE = date
+                            AND
+                            CURRENT_TIME BETWEEN start_time AND end_time
+                        </if>
+                        <!-- 筛选已结束的会议 -->
+                        <if test="processStatus == 3">
+                            CURRENT_TIMESTAMP >
+                                IF(end_time = '24:00', CONCAT(date, ' 23:59:59.999999999'), CONCAT(date, ' ', end_time))
+                        </if>
+                    </if>
+                    <!-- 查询未被删除的数据记录 -->
+                    AND is_deleted = 0
+                </where>
+            ) cr
+                LEFT JOIN employee e ON cr.res_emp_id = e.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <!-- 检查当前会议室下是否还有未结束的会议 -->
+    <select id="checkStillNoneCompleteConferenceUnderRoom" resultType="java.lang.Boolean">
+        SELECT
+            COUNT(1)
+        FROM
+            conference_reservation
+        WHERE
+            room_code = #{roomCode}
+          <!-- 在 XML 中，字符 "<" 和 "&" 是非法的，大于号是合法的。使用实体引用来代替 -->
+          AND CURRENT_TIMESTAMP &lt;=
+            IF(end_time = '24:00', CONCAT(date, ' 23:59:59.999999999'), CONCAT(date, ' ', end_time))
+          AND is_deleted = 0
+    </select>
+
+</mapper>
