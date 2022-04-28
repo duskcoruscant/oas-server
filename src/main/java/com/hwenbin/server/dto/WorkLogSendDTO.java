@@ -71,4 +71,14 @@ public class WorkLogSendDTO {
      */
     private Date updateTime;
 
+    /**
+     * 是否已读
+     */
+    private Boolean isRead;
+
+    /**
+     * 评论
+     */
+    private String comment;
+
 }

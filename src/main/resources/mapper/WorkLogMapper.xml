@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.WorkLogMapper">
+
+    <resultMap id="WorkLogEntityMap" type="com.hwenbin.server.entity.WorkLogEntity">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="todayContent" column="today_content"/>
+        <result property="tomorrowContent" column="tomorrow_content"/>
+        <result property="question" column="question"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="WorkLogDTOMap" type="com.hwenbin.server.dto.WorkLogDTO" extends="WorkLogEntityMap">
+        <result property="commentCount" column="comment_count"/>
+        <collection property="sendEmpNames" ofType="String">
+            <result column="send_emp_name"/>
+        </collection>
+        <collection property="readEmpNames" ofType="String">
+            <result column="read_emp_name"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="WorkLogDTOWithCommentsMap" type="com.hwenbin.server.dto.WorkLogDTO" extends="WorkLogEntityMap">
+        <collection property="comments" ofType="com.hwenbin.server.dto.WorkLogDTO$CommentDetail">
+            <result property="time" column="time"/>
+            <result property="name" column="name"/>
+            <result property="content" column="content"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="WorkLogDTOWithSendEmpIdsMap" type="com.hwenbin.server.dto.WorkLogDTO" extends="WorkLogEntityMap">
+        <collection property="sendEmpIds" ofType="Long">
+            <result column="send_emp_id"/>
+        </collection>
+    </resultMap>
+
+    <!-- 分页查询 -->
+    <select id="pageQuery" resultMap="WorkLogDTOMap">
+        SELECT
+            wl.id, wl.type, wl.title, wl.today_content, wl.tomorrow_content, wl.question, wl.create_time,
+               wl.update_time, e.name AS send_emp_name, IF(wls.is_read = TRUE, e.name, NULL) AS read_emp_name,
+                (SELECT COUNT(1) FROM work_log_send WHERE log_id = wl.id AND comment IS NOT NULL) AS comment_count
+        FROM
+            work_log wl
+                LEFT JOIN work_log_send wls ON wl.id = wls.log_id
+                LEFT JOIN employee e ON wls.send_emp_id = e.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <!-- 获取日志详情及其评论列表 -->
+    <select id="getWorkLogWithCommentsById" resultMap="WorkLogDTOWithCommentsMap">
+        SELECT
+            wl.id, wl.type, wl.title, wl.today_content, wl.tomorrow_content, wl.question,
+               wls.comment_time AS time, wls.comment AS content, e.name AS name
+        FROM
+             work_log wl
+                 LEFT JOIN work_log_send wls ON wl.id = wls.log_id
+                 LEFT JOIN employee e ON wls.send_emp_id = e.id
+        WHERE
+            wl.id = #{id} AND wls.comment IS NOT NULL AND wls.comment_time IS NOT NULL
+    </select>
+
+    <!-- 获取日志详情及其 通知人ids -->
+    <select id="getWorkLogWithSendEmpIdsById" resultMap="WorkLogDTOWithSendEmpIdsMap">
+        SELECT
+            wl.id, wl.type, wl.title, wl.today_content, wl.tomorrow_content, wl.question,
+               wls.send_emp_id
+        FROM
+            work_log wl
+                LEFT JOIN work_log_send wls on wl.id = wls.log_id
+        WHERE
+            wl.id = #{id}
+    </select>
+
+</mapper>

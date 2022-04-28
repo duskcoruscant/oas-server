@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author hwb
  * @date 2022/04/11 14:06
@@ -27,5 +29,20 @@ public class WorkLogSendEntity {
      * 发送人id
      */
     private Long sendEmpId;
+
+    /**
+     * 是否已读
+     */
+    private Boolean isRead;
+
+    /**
+     * 评论
+     */
+    private String comment;
+
+    /**
+     * 评论时间
+     */
+    private Date commentTime;
 
 }

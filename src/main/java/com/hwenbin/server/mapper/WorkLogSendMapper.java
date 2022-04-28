@@ -1,6 +1,6 @@
 package com.hwenbin.server.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hwenbin.server.core.mybatis.mapper.MyBaseMapper;
 import com.hwenbin.server.dto.WorkLogSendDTO;
@@ -39,6 +39,6 @@ public interface WorkLogSendMapper extends MyBaseMapper<WorkLogSendEntity> {
      * @return 分页及结果
      */
     IPage<WorkLogSendDTO> pageQuery(IPage<WorkLogSendDTO> page,
-                                    @Param("ew") LambdaQueryWrapper<WorkLogSendEntity> queryWrapper);
+                                    @Param("ew") QueryWrapper<WorkLogSendDTO> queryWrapper);
 
 }

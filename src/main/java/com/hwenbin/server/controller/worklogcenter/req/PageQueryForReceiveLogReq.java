@@ -27,6 +27,11 @@ public class PageQueryForReceiveLogReq extends PageParam {
     private Integer type;
 
     /**
+     * 日志标题
+     */
+    private String title;
+
+    /**
      * 开始时间
      */
     @DateTimeFormat(pattern = ProjectConstant.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)

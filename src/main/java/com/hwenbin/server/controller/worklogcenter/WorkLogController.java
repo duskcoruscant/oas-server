@@ -1,14 +1,13 @@
 package com.hwenbin.server.controller.worklogcenter;
 
-import com.hwenbin.server.controller.worklogcenter.req.AddWorkLogReq;
-import com.hwenbin.server.controller.worklogcenter.req.PageQueryForWorkLogReq;
-import com.hwenbin.server.controller.worklogcenter.req.UpdateWorkLogReq;
-import com.hwenbin.server.controller.worklogcenter.req.PageQueryForReceiveLogReq;
+import cn.hutool.core.bean.BeanUtil;
+import com.hwenbin.server.controller.worklogcenter.req.*;
 import com.hwenbin.server.core.web.response.CommonResult;
 import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.core.web.response.ResultGenerator;
+import com.hwenbin.server.dto.WorkLogDTO;
 import com.hwenbin.server.dto.WorkLogSendDTO;
-import com.hwenbin.server.entity.WorkLogEntity;
+import com.hwenbin.server.entity.WorkLogSendEntity;
 import com.hwenbin.server.service.WorkLogService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +28,12 @@ public class WorkLogController {
     private WorkLogService workLogService;
 
     /**
-     * 日志 分页查询
+     * 日志 分页查询 —— 我发出的
      * @param req 日志参数 + 分页参数
      * @return 分页结果
      */
     @GetMapping
-    public CommonResult<PageResult<WorkLogEntity>> pageQueryForWorkLog(@Valid PageQueryForWorkLogReq req) {
+    public CommonResult<PageResult<WorkLogDTO>> pageQueryForWorkLog(@Valid PageQueryForWorkLogReq req) {
         return ResultGenerator.genOkResult(workLogService.pageQuery(req));
     }
 
@@ -61,13 +60,23 @@ public class WorkLogController {
     }
 
     /**
-     * 查询日志详情
+     * 查询日志详情及其 通知人ids
      * @param id 日志id
-     * @return 日志实体
+     * @return workLogDTO（与实体相比多了sendEmpIds）
      */
     @GetMapping("{id}")
-    public CommonResult<WorkLogEntity> getWorkLogById(@PathVariable Long id) {
-        return ResultGenerator.genOkResult(workLogService.getById(id));
+    public CommonResult<WorkLogDTO> getWorkLogById(@PathVariable Long id) {
+        return ResultGenerator.genOkResult(workLogService.getWorkLogWithSendEmpIdsById(id));
+    }
+
+    /**
+     * 获取日志详情及评论列表
+     * @param id 日志id
+     * @return workLogDTO（与实体相比多了comments）
+     */
+    @GetMapping("/workLogWithComments/{id}")
+    public CommonResult<WorkLogDTO> getWorkLogWithCommentsById(@PathVariable Long id) {
+        return ResultGenerator.genOkResult(workLogService.getWorkLogWithCommentsById(id));
     }
 
     /**
@@ -78,6 +87,19 @@ public class WorkLogController {
     @GetMapping("/receive")
     public CommonResult<PageResult<WorkLogSendDTO>> pageQueryForReceiveLog(@Valid PageQueryForReceiveLogReq req) {
         return ResultGenerator.genOkResult(workLogService.pageQueryForReceiveLog(req));
+    }
+
+    /**
+     * 已读或评论收到的日志
+     * @param req id + 已读标识 + 评论
+     * @return true
+     */
+    @PutMapping("/receive")
+    public CommonResult<Boolean> readOrCommentReceiveLog(@Valid @RequestBody ReadOrCommentReceiveLogReq req) {
+        WorkLogSendEntity workLogSendEntity = new WorkLogSendEntity();
+        BeanUtil.copyProperties(req, workLogSendEntity);
+        workLogService.updateWorkLogSendById(workLogSendEntity);
+        return ResultGenerator.genOkResult(true);
     }
 
 }

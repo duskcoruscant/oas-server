@@ -94,6 +94,8 @@ public enum ResultCode {
      */
     WORK_LOG_NOT_FOUND(2600, "当前操作的日志不存在"),
 
+    WORK_LOG_SEND_ENTITY_NOT_FOUND(2601, "当前操作的日志不存在"),
+
     /**
      * 会议室
      */

@@ -1,13 +1,10 @@
 package com.hwenbin.server.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.hwenbin.server.core.mybatis.type.JsonLongSetTypeHandler;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Set;
 
 /**
  * 工作日志实体类
@@ -64,17 +61,5 @@ public class WorkLogEntity {
      * 更新时间
      */
     private Date updateTime;
-
-    /**
-     * 通知人id集合
-     */
-    @TableField(typeHandler = JsonLongSetTypeHandler.class)
-    private Set<Long> sendEmpIds;
-
-    /**
-     * 已读人id集合
-     */
-    @TableField(typeHandler = JsonLongSetTypeHandler.class)
-    private Set<Long> readEmpIds;
 
 }

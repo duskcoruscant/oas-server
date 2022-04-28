@@ -4,7 +4,7 @@
 
     <select id="pageQuery" resultType="com.hwenbin.server.dto.WorkLogSendDTO">
         SELECT
-            wls.id, wls.log_id, wls.send_emp_id, wl.type, wl.title, wl.today_content, wl.tomorrow_content,
+            wls.id, wls.log_id, wls.send_emp_id, wls.is_read, wls.comment, wl.type, wl.title, wl.today_content, wl.tomorrow_content,
                wl.question, wl.create_emp_id, wl.create_time, wl.update_time, e.name AS create_emp_name
         FROM
             work_log_send wls
