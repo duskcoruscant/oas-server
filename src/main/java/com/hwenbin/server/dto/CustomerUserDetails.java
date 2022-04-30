@@ -30,6 +30,10 @@ public class CustomerUserDetails implements UserDetails {
 
     @Getter
     @Setter
+    private Long deptId;
+
+    @Getter
+    @Setter
     private Collection<AccountWithRole.SimpleRole> roles;
 
     @Setter
@@ -39,6 +43,7 @@ public class CustomerUserDetails implements UserDetails {
         this.setId(user.getId());
         this.setUserName(user.getNickname());
         this.setPassword(user.getPassword());
+        this.setDeptId(user.getDeptId());
         this.setRoles(user.getRoles());
         this.setAuthorities(authorities);
     }

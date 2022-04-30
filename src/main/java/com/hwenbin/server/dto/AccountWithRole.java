@@ -1,6 +1,5 @@
 package com.hwenbin.server.dto;
 
-import com.hwenbin.server.entity.Account;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +11,7 @@ import java.util.Collection;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AccountWithRole extends Account {
+public class AccountWithRole extends AccountDTO {
 
     // /**
     //  * 用户的角色Id

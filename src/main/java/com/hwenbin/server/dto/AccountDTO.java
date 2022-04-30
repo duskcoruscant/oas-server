@@ -48,4 +48,6 @@ public class AccountDTO {
 
     private Long roleId;
 
+    private Long deptId;
+
 }
