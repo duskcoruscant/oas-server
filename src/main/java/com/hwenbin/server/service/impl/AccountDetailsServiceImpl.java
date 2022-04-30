@@ -1,6 +1,7 @@
 package com.hwenbin.server.service.impl;
 
 import com.hwenbin.server.dto.AccountWithRolePermission;
+import com.hwenbin.server.dto.CustomerUserDetails;
 import com.hwenbin.server.service.AccountService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,17 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String name) {
+        // final AccountWithRolePermission accountWithRolePermission =
+        //         this.accountService.findDetailByName(name);
+        // // 权限
+        // final List<SimpleGrantedAuthority> authorities =
+        //         accountWithRolePermission.getPermissionCodeList().stream()
+        //                 .map(SimpleGrantedAuthority::new)
+        //                 .collect(Collectors.toList());
+        // // 角色
+        // authorities.add(new SimpleGrantedAuthority(accountWithRolePermission.getRoleName()));
+        // return new org.springframework.security.core.userdetails.User(
+        //         accountWithRolePermission.getNickname(), "", authorities);
         final AccountWithRolePermission accountWithRolePermission =
                 this.accountService.findDetailByName(name);
         // 权限
@@ -33,9 +45,12 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
         // 角色
-        authorities.add(new SimpleGrantedAuthority(accountWithRolePermission.getRoleName()));
-        return new org.springframework.security.core.userdetails.User(
-                accountWithRolePermission.getNickname(), "", authorities);
+        authorities.addAll(
+                accountWithRolePermission.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                        .collect(Collectors.toSet())
+        );
+        return new CustomerUserDetails(accountWithRolePermission, authorities);
     }
 
 }

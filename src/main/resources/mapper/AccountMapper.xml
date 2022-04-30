@@ -12,8 +12,14 @@
     </resultMap>
 
     <resultMap id="AccountWithRoleMap" type="com.hwenbin.server.dto.AccountWithRole" extends="AccountMap">
-        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
-        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+<!--        <result column="role_id" jdbcType="BIGINT" property="roleId"/>-->
+<!--        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>-->
+        <collection property="roles" ofType="com.hwenbin.server.dto.AccountWithRole$SimpleRole">
+            <result column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+            <result column="role_code" property="roleCode"/>
+            <result column="role_status" property="roleStatus"/>
+        </collection>
     </resultMap>
 
     <resultMap id="AccountWithRolePermissionMap" type="com.hwenbin.server.dto.AccountWithRolePermission"
@@ -29,6 +35,8 @@
         a.*,
         r.id as role_id,
         r.name as role_name,
+        r.code as role_code,
+        r.status as role_status,
         p.code as permission_code
         FROM account a
         LEFT JOIN account_role ar ON a.id = ar.account_id

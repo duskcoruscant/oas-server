@@ -1,12 +1,14 @@
 package com.hwenbin.server.filter;
 
 import com.hwenbin.server.core.jwt.JwtUtil;
+import com.hwenbin.server.service.impl.AccountDetailsServiceImpl;
 import com.hwenbin.server.util.IpUtils;
 import com.hwenbin.server.util.UrlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -32,6 +34,9 @@ public class AuthenticationFilter implements Filter {
 
     @Resource
     private JwtUtil jwtUtil;
+
+    @Resource
+    private AccountDetailsServiceImpl accountDetailsServiceImpl;
 
     @Override
     public void init(final FilterConfig filterConfig) {
@@ -82,16 +87,24 @@ public class AuthenticationFilter implements Filter {
 
             if (name != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (this.jwtUtil.validateToken(token)) {
-                    final UsernamePasswordAuthenticationToken authentication =
-                            this.jwtUtil.getAuthentication(name, token);
 
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    // final UsernamePasswordAuthenticationToken authentication =
+                    //         this.jwtUtil.getAuthentication(name, token);
+                    UserDetails userDetails = accountDetailsServiceImpl.loadUserByUsername(name);
+                    if (userDetails != null) {
+                        final UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails, userDetails.getPassword(),userDetails.getAuthorities()
+                                );
 
-                    // 向 security 上下文中注入已认证的账户
-                    // 之后可以直接在控制器 controller 的入参获得 Principal 或 Authentication
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    AuthenticationFilter.log.debug(
-                            "==> Account<{}> is authorized, set security context", name);
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                        // 向 security 上下文中注入已认证的账户
+                        // 之后可以直接在控制器 controller 的入参获得 Principal 或 Authentication
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        AuthenticationFilter.log.debug(
+                                "==> Account<{}> is authorized, set security context", name);
+                    }
                 }
             }
         } else {

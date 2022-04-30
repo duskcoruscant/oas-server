@@ -28,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author hwb
@@ -173,19 +171,23 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if (account == null) {
             throw new UsernameNotFoundException("没有找到该账户昵称");
         }
-        if ("超级管理员".equals(account.getRoleName())) {
+        // if ("超级管理员".equals(account.getRoleName())) {
+        //     // 超级管理员所有权限都有
+        //     account.setPermissionCodeList(this.permissionMapper.listAllCode());
+        // } else {
+        //     // 待优化
+        //     Set<Long> roleIdSet =
+        //             this.accountRoleMapper.selectList("account_id", account.getId())
+        //                     .stream().map(AccountRole::getRoleId).collect(Collectors.toSet());
+        //     if (this.roleMapper.selectBatchIds(roleIdSet).stream().anyMatch(role -> "超级管理员".equals(role.getName()))) {
+        //         account.setRoleId(1L);
+        //         account.setRoleName("超级管理员");
+        //         account.setPermissionCodeList(this.permissionMapper.listAllCode());
+        //     }
+        // }
+        if (account.getRoles().stream().anyMatch(role -> "超级管理员".equals(role.getRoleName()))) {
             // 超级管理员所有权限都有
             account.setPermissionCodeList(this.permissionMapper.listAllCode());
-        } else {
-            // 待优化
-            Set<Long> roleIdSet =
-                    this.accountRoleMapper.selectList("account_id", account.getId())
-                            .stream().map(AccountRole::getRoleId).collect(Collectors.toSet());
-            if (this.roleMapper.selectBatchIds(roleIdSet).stream().anyMatch(role -> "超级管理员".equals(role.getName()))) {
-                account.setRoleId(1L);
-                account.setRoleName("超级管理员");
-                account.setPermissionCodeList(this.permissionMapper.listAllCode());
-            }
         }
         return account;
     }
