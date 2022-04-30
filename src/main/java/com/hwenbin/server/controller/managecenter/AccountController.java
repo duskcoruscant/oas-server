@@ -6,7 +6,6 @@ import com.hwenbin.server.core.web.response.ResultGenerator;
 import com.hwenbin.server.dto.AccountWithRolePermission;
 import com.hwenbin.server.entity.Account;
 import com.hwenbin.server.service.AccountService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
