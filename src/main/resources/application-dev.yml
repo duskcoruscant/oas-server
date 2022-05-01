@@ -5,7 +5,7 @@ spring:
   # 数据源（应该全部加密）
   datasource:
     # 连接，注意各个配置，尤其是要一次性执行多条 SQL 时，要 allowMultiQueries=true
-    url: jdbc:mysql://localhost:3306/oas_dev?useUnicode=true&useSSL=false&allowMultiQueries=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/oas_dev?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai&autoReconnect=true&nullCatalogMeansCurrent=true
     # 用户名 root
     username: MyEnc({btTSNb3PH7saU2yQ7FeCsQ==})
     # 密码 root

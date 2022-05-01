@@ -122,6 +122,19 @@ public enum ResultCode {
      */
     MISSIVE_NOT_FOUND(2800, "当前操作的公文不存在"),
 
+    /**
+     * 工作流
+     */
+    WORKFLOW_CATEGORY_NOT_FOUND(2900, "当前操作的流程分类不存在"),
+
+    WORKFLOW_CATEGORY_NAME_DUPLICATE(2901, "已经存在该名称的流程分类"),
+
+    WORKFLOW_CATEGORY_CODE_DUPLICATE(2902, "已经存在该编码的流程分类"),
+
+    WORKFLOW_FORM_NOT_FOUND(2905, "当前操作的流程表单不存在"),
+
+    WORKFLOW_FORM_NAME_DUPLICATE(2906, "已经存在该名称的流程表单"),
+
     /*
      * 原有类异常
      */

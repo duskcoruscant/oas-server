@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hwenbin.server.mapper.WorkflowFormMapper">
+
+    <!-- 查询表单列表 -->
+    <select id="selectFormList" resultType="com.hwenbin.server.entity.WorkflowFormEntity">
+        SELECT
+            wf.form_id,
+            wf.form_name,
+            wf.content
+        FROM workflow_form wf
+            LEFT JOIN workflow_deploy_form wdf ON wf.form_id = wdf.form_id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>
