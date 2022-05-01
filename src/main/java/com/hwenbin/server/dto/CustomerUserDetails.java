@@ -41,7 +41,7 @@ public class CustomerUserDetails implements UserDetails {
 
     public CustomerUserDetails(AccountWithRolePermission user, Collection<? extends GrantedAuthority> authorities){
         this.setId(user.getId());
-        this.setUserName(user.getNickname());
+        this.setUserName(user.getEmpName());
         this.setPassword(user.getPassword());
         this.setDeptId(user.getDeptId());
         this.setRoles(user.getRoles());

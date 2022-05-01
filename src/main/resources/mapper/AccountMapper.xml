@@ -10,6 +10,7 @@
         <result column="register_time" jdbcType="TIMESTAMP" property="registerTime"/>
         <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
         <result column="dept_id" jdbcType="BIGINT" property="deptId"/>
+        <result column="emp_name" jdbcType="VARCHAR" property="empName"/>
     </resultMap>
 
     <resultMap id="AccountWithRoleMap" type="com.hwenbin.server.dto.AccountWithRole" extends="AccountMap">
@@ -35,6 +36,7 @@
         SELECT
         a.*,
         e.dept_id,
+        e.name as emp_name,
         r.id as role_id,
         r.name as role_name,
         r.code as role_code,

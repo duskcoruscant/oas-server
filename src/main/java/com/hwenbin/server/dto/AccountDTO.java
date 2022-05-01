@@ -50,4 +50,6 @@ public class AccountDTO {
 
     private Long deptId;
 
+    private String empName;
+
 }
