@@ -2,6 +2,7 @@ package com.hwenbin.server.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -15,6 +16,7 @@ import com.hwenbin.server.enums.CommonStatusEnum;
 import com.hwenbin.server.mapper.DepartmentMapper;
 import com.hwenbin.server.service.DepartmentService;
 import com.hwenbin.server.util.AssertUtils;
+import com.hwenbin.server.util.TreeBuildUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -162,6 +164,22 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         // 加入自己
         resultS.add(id);
         return resultS;
+    }
+
+    @Override
+    public List<Tree<Long>> buildDeptTreeSelect(List<Department> deptList) {
+        if (CollUtil.isEmpty(deptList)) {
+            return CollUtil.newArrayList();
+        }
+        return TreeBuildUtils.build(
+                deptList,
+                (dept, tree) ->
+                        tree
+                                .setId(dept.getId())
+                                .setParentId(dept.getParentId())
+                                .setName(dept.getName())
+                                .setWeight(dept.getSort())
+        );
     }
 
     /**

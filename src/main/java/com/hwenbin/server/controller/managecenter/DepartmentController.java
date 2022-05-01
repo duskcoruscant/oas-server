@@ -1,5 +1,6 @@
 package com.hwenbin.server.controller.managecenter;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.hwenbin.server.controller.managecenter.req.GetAllDeptListReq;
 import com.hwenbin.server.core.web.response.CommonResult;
 import com.hwenbin.server.core.web.response.ResultCode;
@@ -45,6 +46,16 @@ public class DepartmentController {
     @GetMapping("/listEnableDept")
     public CommonResult<List<Department>> getEnableDeptList() {
         return ResultGenerator.genOkResult(departmentService.getEnableDeptList());
+    }
+
+    /**
+     * 获取部门下拉树列表
+     * @return 树结构数据
+     */
+    @GetMapping("/treeselect")
+    public CommonResult<List<Tree<Long>>> treeSelect() {
+        List<Department> deptList = departmentService.getEnableDeptList();
+        return ResultGenerator.genOkResult(departmentService.buildDeptTreeSelect(deptList));
     }
 
     /**

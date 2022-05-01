@@ -1,5 +1,6 @@
 package com.hwenbin.server.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwenbin.server.controller.managecenter.req.GetAllDeptListReq;
 import com.hwenbin.server.dto.DepartmentDTO;
@@ -60,5 +61,12 @@ public interface DepartmentService extends IService<Department> {
      * @return 部门id列表
      */
     Set<Long> getDeptIdListWithItAndChildId(Long id);
+
+    /**
+     * 构建前端所需要下拉树结构
+     * @param deptList 部门列表
+     * @return 下拉树结构列表
+     */
+    List<Tree<Long>> buildDeptTreeSelect(List<Department> deptList);
 
 }
