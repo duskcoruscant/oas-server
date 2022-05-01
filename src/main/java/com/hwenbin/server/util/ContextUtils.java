@@ -7,6 +7,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * 上下文工具
@@ -34,7 +35,7 @@ public class ContextUtils {
     public static CustomerUserDetails getCustomerUserDetails() {
         final Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        return authentication == null ? null : (CustomerUserDetails) authentication.getPrincipal();
+        return Objects.requireNonNull((CustomerUserDetails) authentication.getPrincipal());
     }
 
 }
