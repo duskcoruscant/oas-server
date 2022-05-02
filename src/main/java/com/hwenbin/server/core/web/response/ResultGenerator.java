@@ -23,6 +23,17 @@ public class ResultGenerator {
     /**
      * 成功响应结果
      *
+     * @param data 内容
+     * @param message 消息
+     * @return 响应结果
+     */
+    public static <T> CommonResult<T> genOkResult(final T data, String message) {
+        return genOkResult(data).setMessage(message);
+    }
+
+    /**
+     * 成功响应结果
+     *
      * @return 响应结果
      */
     public static <T> CommonResult<T> genOkResult() {
