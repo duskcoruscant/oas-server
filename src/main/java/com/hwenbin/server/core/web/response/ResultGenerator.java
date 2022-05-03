@@ -17,7 +17,7 @@ public class ResultGenerator {
      * @return 响应结果
      */
     public static <T> CommonResult<T> genOkResult(final T data) {
-        return new CommonResult<T>().setCode(HttpStatus.OK.value()).setData(data);
+        return new CommonResult<T>().setCode(HttpStatus.OK.value()).setData(data).setMessage("操作成功");
     }
 
     /**
