@@ -5,6 +5,7 @@ import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.entity.WorkflowCategoryEntity;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 流程分类Service接口
@@ -27,6 +28,12 @@ public interface WorkflowCategoryService {
      * @return 分页结果
      */
     PageResult<WorkflowCategoryEntity> pageQuery(PageQueryForWorkflowCategoryReq req);
+
+    /**
+     * 获取所有
+     * @return 流程分类列表
+     */
+    List<WorkflowCategoryEntity> getAll();
 
     /**
      * 新增

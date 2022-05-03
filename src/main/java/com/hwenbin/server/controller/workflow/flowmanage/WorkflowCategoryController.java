@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 流程分类控制器
@@ -39,6 +40,15 @@ public class WorkflowCategoryController {
     public CommonResult<PageResult<WorkflowCategoryEntity>> pageQueryForWorkflowCategory(
             @Valid PageQueryForWorkflowCategoryReq req) {
         return ResultGenerator.genOkResult(workflowCategoryService.pageQuery(req));
+    }
+
+    /**
+     * 获取全部流程分类
+     * @return 流程分类列表
+     */
+    @GetMapping("/listAll")
+    public CommonResult<List<WorkflowCategoryEntity>> listAllWorkflowCategory() {
+        return ResultGenerator.genOkResult(workflowCategoryService.getAll());
     }
 
     // /**

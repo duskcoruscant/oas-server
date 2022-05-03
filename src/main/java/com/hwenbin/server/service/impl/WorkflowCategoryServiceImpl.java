@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 流程分类Service业务层处理
@@ -41,6 +42,11 @@ public class WorkflowCategoryServiceImpl implements WorkflowCategoryService {
                         .likeIfPresent(WorkflowCategoryEntity::getCategoryName, req.getCategoryName())
                         .likeIfPresent(WorkflowCategoryEntity::getCode, req.getCode())
         );
+    }
+
+    @Override
+    public List<WorkflowCategoryEntity> getAll() {
+        return workflowCategoryMapper.selectList();
     }
 
     @Override
