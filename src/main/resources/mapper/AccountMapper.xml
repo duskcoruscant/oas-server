@@ -52,6 +52,7 @@
             <if test="id != null">a.id = #{id}</if>
             <if test="email != null">a.email = #{email}</if>
             <if test="nickname != null">a.nickname = #{nickname}</if>
+            <if test="name != null">e.name = #{name}</if>
         </where>
     </select>
 

@@ -167,7 +167,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     @Override
     public AccountWithRolePermission findDetailByName(final String name)
             throws UsernameNotFoundException {
-        final AccountWithRolePermission account = this.findDetailBy("nickname", name);
+        // final AccountWithRolePermission account = this.findDetailBy("nickname", name);
+        final AccountWithRolePermission account = this.findDetailBy("name", name);
         if (account == null) {
             throw new UsernameNotFoundException("没有找到该账户昵称");
         }
