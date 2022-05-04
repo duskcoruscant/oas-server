@@ -1,5 +1,6 @@
 package com.hwenbin.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -59,5 +60,11 @@ public class Attendance {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 入职日期 @TableField(exist = false)表示表中不存在
+     */
+    @TableField(exist = false)
+    private Date entryDate;
 
 }

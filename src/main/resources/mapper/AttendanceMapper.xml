@@ -16,9 +16,10 @@
 
     <!--通过员工id和日期查询所有考勤记录-->
     <select id="listByEmpIdAndClockDate" resultMap="AttendanceMap">
-        select id, emp_id, clock_date, clock_in_time, clock_out_time, come_late_minutes, leave_early_minutes,
-               updater, update_time
-        from attendance
+        select a.id, a.emp_id, a.clock_date, a.clock_in_time, a.clock_out_time, a.come_late_minutes,
+               a.leave_early_minutes, a.updater, a.update_time, e.entry_date
+        from attendance a
+            left join employee e on a.emp_id = e.id
         where emp_id = #{empId}
         and year(clock_date) = #{year}
         and month(clock_date) = #{month}
