@@ -78,13 +78,20 @@ public class WorkflowTaskServiceImpl extends FlowServiceFactory implements Workf
         if (Objects.isNull(task)) {
             throw new ServiceException("任务不存在");
         }
+        // 判断是否被委派任务
         if (DelegationState.PENDING.equals(task.getDelegationState())) {
+            // 添加审批意见
             taskService.addComment(taskEntity.getTaskId(), taskEntity.getInstanceId(), FlowCommentEnum.DELEGATE.getType(), taskEntity.getComment());
+            // 执行委派，办理完成后，委派任务会自动回到委派人的任务中
             taskService.resolveTask(taskEntity.getTaskId(), taskEntity.getValues());
         } else {
+            // 非委派任务
             taskService.addComment(taskEntity.getTaskId(), taskEntity.getInstanceId(), FlowCommentEnum.NORMAL.getType(), taskEntity.getComment());
             Long userId = ContextUtils.getCustomerUserDetails().getId();
+            // 设置处理人
             taskService.setAssignee(taskEntity.getTaskId(), userId.toString());
+            // 完成任务的办理，taskService服务自动流转到下一个办理节点
+            // 根据流程变量信息是否为空调用重载API，taskEntity.getValues()作为下一次任务所需要的参数
             if (ObjectUtil.isNotEmpty(taskEntity.getValues())) {
                 taskService.complete(taskEntity.getTaskId(), taskEntity.getValues());
             } else {
@@ -354,6 +361,7 @@ public class WorkflowTaskServiceImpl extends FlowServiceFactory implements Workf
             throw new ServiceException("获取任务失败！");
         }
         CustomerUserDetails loginUser = ContextUtils.getCustomerUserDetails();
+        // 拼接审批意见，结果为 (委派人->被委派人：审批意见)
         StringBuilder commentBuilder = new StringBuilder(loginUser.getUsername())
                 .append("->");
         Employee user = employeeService.getEmployeeById(Long.parseLong(taskEntity.getUserId()));
