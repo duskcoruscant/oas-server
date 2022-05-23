@@ -69,6 +69,11 @@ public class File extends BaseEntity {
     private String deletedBatchNum;
 
     /**
+     * 挂载的共享目录
+     */
+    private Long mountShareFolderId;
+
+    /**
      * 是否是文件夹
      */
     public Boolean isFolder() {

@@ -45,6 +45,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.hwenbin.server.enums.FileShareTypeEnum.IS_SHARED;
 import static com.hwenbin.server.enums.FileShareTypeEnum.NONE_SHARED;
 
 /**
@@ -70,12 +71,25 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
     @Override
     public PageResult<File> pageQuery(PageQueryForFileReq req) {
+        boolean queryShare = req.getIsShared() != null
+                && Objects.equals(req.getIsShared(), IS_SHARED.getValue());
         PageResult<File> filePageResult = fileMapper.selectPage(req,
                 new MyLambdaQueryWrapper<File>()
                         .likeIfPresent(File::getName, req.getName())
                         .eqIfPresent(File::getEmpId, req.getEmpId())
-                        .eq(File::getIsShared, req.getIsShared() == null ? NONE_SHARED.getValue() : req.getIsShared())
-                        .eq(File::getParentId, req.getParentId())
+                        // .eq(File::getIsShared, req.getIsShared() == null ? NONE_SHARED.getValue() : req.getIsShared())
+                        // .eq(File::getParentId, req.getParentId())
+                        // 查询个人
+                        .func(!queryShare, personal ->
+                                personal.eq(File::getIsShared, NONE_SHARED.getValue())
+                                        .eq(File::getParentId, req.getParentId())
+                        )
+                        // 查询共享
+                        .func(queryShare, share ->
+                                share
+                                        .apply("IF(mount_share_folder_id IS NOT NULL, mount_share_folder_id, " +
+                                        "IF(is_shared = {0}, parent_id, NULL)) = {1}", IS_SHARED.getValue(), req.getParentId())
+                        )
         );
         ListUtil.sort(filePageResult.getList(), (a, b) -> a.isFolder().equals(b.isFolder()) ? 0 : a.isFolder() ? -1 : 1);
         return filePageResult;
@@ -238,6 +252,31 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                         .set(File::getDeletedBatchNum, null)
                         .in(File::getDeletedBatchNum, deletedBatchNums)
         );
+    }
+
+    @Override
+    public List<File> listAllShareFolder() {
+        return fileMapper.selectList(
+                new MyLambdaQueryWrapper<File>()
+                        .select(File::getId, File::getName, File::getParentId)
+                        .eq(File::getType, ProjectConstant.FOLDER)
+                        .eq(File::getIsShared, FileShareTypeEnum.IS_SHARED.getValue())
+        );
+    }
+
+    @Override
+    public void shareFileTo(Long fileId, Long mountFolderId) {
+        // 校验文件是否存在
+        File file = fileMapper.selectById(fileId);
+        AssertUtils.asserts(file != null, ResultCode.FILE_NOT_FOUND);
+        // 校验挂载的文件夹是否存在
+        File mountFolder = fileMapper.selectById(mountFolderId);
+        AssertUtils.asserts(file != null, ResultCode.FILE_NOT_FOUND, "选择挂载的共享文件夹不存在");
+        // 共享文件
+        // 已校验file不为空，忽略提示
+        // file.setIsShared(FileShareTypeEnum.IS_SHARED.getValue()); // 暂不更改isShared的值
+        file.setMountShareFolderId(mountFolderId);
+        fileMapper.updateById(file);
     }
 
     /**

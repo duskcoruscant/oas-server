@@ -1,9 +1,6 @@
 package com.hwenbin.server.controller.filecenter;
 
-import com.hwenbin.server.controller.filecenter.req.CreateFolderReq;
-import com.hwenbin.server.controller.filecenter.req.PageQueryForFileReq;
-import com.hwenbin.server.controller.filecenter.req.RenameFileReq;
-import com.hwenbin.server.controller.filecenter.req.UploadFileReq;
+import com.hwenbin.server.controller.filecenter.req.*;
 import com.hwenbin.server.core.web.response.CommonResult;
 import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.core.web.response.ResultGenerator;
@@ -22,6 +19,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * @author hwb
@@ -103,6 +101,26 @@ public class FileController {
             ServerException, ErrorResponseException, XmlParserException, UnsupportedEncodingException,
             InternalException, InvalidBucketNameException {
         fileService.downloadFileById(id, httpServletResponse);
+    }
+
+    /**
+     * 获取共享文件夹列表
+     * @return 共享文件夹列表
+     */
+    @GetMapping("/listAllShareFolder")
+    public CommonResult<List<File>> listAllShareFolder() {
+        return ResultGenerator.genOkResult(fileService.listAllShareFolder());
+    }
+
+    /**
+     * 个人文件共享至指定共享文件夹中
+     * @param req 请求参数
+     * @return null
+     */
+    @PostMapping("/shareFileTo")
+    public CommonResult<Void> shareFileTo(@Valid @RequestBody ShareFileToReq req) {
+        fileService.shareFileTo(req.getFileId(), req.getMountFolderId());
+        return ResultGenerator.genOkResult();
     }
 
 }

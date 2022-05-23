@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -91,5 +92,18 @@ public interface FileService extends IService<File> {
      * @param deletedBatchNums 删除批次号列表
      */
     void recoveryByDeleteBatchNum(Collection<String> deletedBatchNums);
+
+    /**
+     * 获取所有共享文件夹实体
+     * @return 共享文件夹实体列表
+     */
+    List<File> listAllShareFolder();
+
+    /**
+     * 个人文件挂载至指定共享文件夹下
+     * @param fileId 文件id
+     * @param mountFolderId 挂载的共享文件夹id
+     */
+    void shareFileTo(Long fileId, Long mountFolderId);
 
 }
