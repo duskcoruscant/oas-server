@@ -1,9 +1,7 @@
 package com.hwenbin.server.controller.managecenter;
 
-import com.hwenbin.server.controller.managecenter.req.AddEmployeeReq;
-import com.hwenbin.server.controller.managecenter.req.GetEmployeeListReq;
-import com.hwenbin.server.controller.managecenter.req.UpdateEmpStatusReq;
-import com.hwenbin.server.controller.managecenter.req.UpdateEmployeeReq;
+import com.hwenbin.server.controller.managecenter.req.*;
+import com.hwenbin.server.controller.managecenter.resp.ImportExcelEmployeesResp;
 import com.hwenbin.server.core.web.response.CommonResult;
 import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.core.web.response.ResultGenerator;
@@ -12,9 +10,12 @@ import com.hwenbin.server.entity.Employee;
 import com.hwenbin.server.service.EmployeeService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -120,6 +121,43 @@ public class EmployeeController {
     @GetMapping("/listDeptEmpByEmpId/{empId}")
     public CommonResult<List<Employee>> getDeptEnableEmpListByEmpId(@PathVariable Long empId) {
         return ResultGenerator.genOkResult(employeeService.getDeptEnableEmpListByEmpId(empId));
+    }
+
+    /**
+     * 导出员工列表
+     * @param req 员工筛选参数，与 GetEmployeeListReq 一致
+     * @param httpServletResponse 响应
+     * @throws IOException io
+     */
+    @GetMapping("/export")
+    public void exportExcelEmployees(@Valid ExportEmployeesReq req, HttpServletResponse httpServletResponse)
+            throws IOException {
+        employeeService.exportEmployees(req, httpServletResponse);
+    }
+
+    /**
+     * 获取员工导入模板
+     * @param httpServletResponse 响应
+     * @throws IOException io
+     */
+    @GetMapping("/getImportTemplate")
+    public void getImportTemplate(HttpServletResponse httpServletResponse) throws IOException {
+        employeeService.getImportTemplate(httpServletResponse);
+    }
+
+    /**
+     * 导入员工
+     * @param file Excel 文件
+     * @param updateSupport 是否支持更新，默认为 false
+     * @return 统计
+     * @throws Exception ex
+     */
+    @PostMapping("/import")
+    public CommonResult<ImportExcelEmployeesResp> importExcelEmployees(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "updateSupport", required = false, defaultValue = "false") Boolean updateSupport)
+            throws Exception {
+        return ResultGenerator.genOkResult(employeeService.importEmployees(file, updateSupport));
     }
 
 }

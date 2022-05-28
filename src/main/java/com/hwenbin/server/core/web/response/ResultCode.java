@@ -47,6 +47,14 @@ public enum ResultCode {
 
     EMP_TODAY_HAS_CLOCKED_OUT(2103, "该员工今日已经签退过"),
 
+    EMP_IMPORT_LIST_IS_EMPTY(2104, "导入员工数据不能为空！"),
+
+    EMP_NICKNAME_DUPLICATE(2105, "已经存在该账户昵称的员工"),
+
+    EMP_PHONE_DUPLICATE(2106, "已经存在该手机号的员工"),
+
+    EMP_EMAIL_DUPLICATE(2106, "已经存在该邮箱的员工"),
+
     /*
     部门
      */
