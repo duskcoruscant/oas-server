@@ -82,6 +82,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         checkAddOrUpdate(departmentDTO.getId(), departmentDTO.getParentId(), departmentDTO.getName());
         Department department = new Department();
         BeanUtil.copyProperties(departmentDTO, department);
+        // todo: 当前端传来某些字段为null时，updateById方法会过滤掉null字段，导致数据错误
         this.updateById(department);
     }
 
