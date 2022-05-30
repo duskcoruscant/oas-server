@@ -11,6 +11,7 @@ import com.hwenbin.server.core.web.response.ResultCode;
 import com.hwenbin.server.core.web.response.SortingField;
 import com.hwenbin.server.dto.PositionDTO;
 import com.hwenbin.server.entity.Position;
+import com.hwenbin.server.enums.CommonStatusEnum;
 import com.hwenbin.server.mapper.PositionMapper;
 import com.hwenbin.server.service.PositionService;
 import com.hwenbin.server.util.AssertUtils;
@@ -55,9 +56,15 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
     public void update(PositionDTO positionDTO) {
         // 校验
         checkAddOrUpdate(positionDTO.getId(), positionDTO.getName(), positionDTO.getCode());
+        // 若状态变更为关闭，需考虑当前职位存在员工关联的情况处理
+        if (positionDTO.getStatus() != null && CommonStatusEnum.DISABLE.getStatus().equals(positionDTO.getStatus())) {
+            AssertUtils.asserts(
+                    !positionMapper.existRelatedEmployee(positionDTO.getId()),
+                    ResultCode.POSITION_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_CLOSE
+            );
+        }
         final Position position = new Position();
         BeanUtil.copyProperties(positionDTO, position);
-        // TODO : 若状态发生变更，需考虑当前职位存在员工关联的情况处理
         positionMapper.updateById(position);
     }
 
@@ -70,7 +77,11 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
     @Override
     public void delete(Long id) {
         checkPositionExists(id);
-        // TODO : 若当前职位存在员工关联的情况处理
+        // 若当前职位存在员工关联的情况处理
+        AssertUtils.asserts(
+                !positionMapper.existRelatedEmployee(id),
+                ResultCode.POSITION_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_DELETE
+        );
         positionMapper.deleteById(id);
     }
 

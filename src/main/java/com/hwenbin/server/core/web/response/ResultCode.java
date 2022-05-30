@@ -72,6 +72,10 @@ public enum ResultCode {
 
     DEPT_EXITS_CHILDREN(2206, "存在子部门，无法删除"),
 
+    DEPT_OR_CHILDREN_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_CLOSE(2207, "当前操作的部门或者子部门存在员工，不允许变更状态为关闭"),
+
+    DEPT_OR_CHILDREN_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_DELETE(2208, "当前操作的部门或者子部门存在员工，不允许删除"),
+
     /*
     职位
      */
@@ -80,6 +84,10 @@ public enum ResultCode {
     POSITION_NAME_DUPLICATE(2301, "已经存在该名字的职位"),
 
     POSITION_CODE_DUPLICATE(2302, "已经存在该标识的职位"),
+
+    POSITION_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_CLOSE(2303, "当前操作的职位存在关联的员工，不允许变更状态为关闭"),
+
+    POSITION_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_DELETE(2304, "当前操作的职位存在关联的员工，不允许删除"),
 
     /**
      * 角色
@@ -91,6 +99,8 @@ public enum ResultCode {
     ROLE_CODE_DUPLICATE(2402, "已经存在该标识的角色"),
 
     ROLE_TYPE_IS_BUILTIN_NOT_SUPPORT_CHANGE(2403, "当前操作的角色为系统内置角色，不允许变更"),
+
+    ROLE_EXIST_ACCOUNT_RELATED(2404, "当前操作的角色存在账户关联，不允许变更状态为关闭"),
 
     /**
      * 文件

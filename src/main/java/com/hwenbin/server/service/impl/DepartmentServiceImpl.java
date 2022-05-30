@@ -12,9 +12,11 @@ import com.hwenbin.server.core.mybatis.query.MyLambdaQueryWrapper;
 import com.hwenbin.server.core.web.response.ResultCode;
 import com.hwenbin.server.dto.DepartmentDTO;
 import com.hwenbin.server.entity.Department;
+import com.hwenbin.server.entity.Employee;
 import com.hwenbin.server.enums.CommonStatusEnum;
 import com.hwenbin.server.mapper.DepartmentMapper;
 import com.hwenbin.server.service.DepartmentService;
+import com.hwenbin.server.service.EmployeeService;
 import com.hwenbin.server.util.AssertUtils;
 import com.hwenbin.server.util.TreeBuildUtils;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,9 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
     @Resource
     private DepartmentMapper departmentMapper;
+
+    @Resource
+    private EmployeeService employeeService;
 
     @Override
     public List<Department> getAllDeptList(GetAllDeptListReq req) {
@@ -80,6 +85,15 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     @Override
     public void updateDept(DepartmentDTO departmentDTO) {
         checkAddOrUpdate(departmentDTO.getId(), departmentDTO.getParentId(), departmentDTO.getName());
+        // 若状态变更为关闭，需考虑当前角色存在账户关联的情况处理
+        if (CommonStatusEnum.DISABLE.getStatus().equals(departmentDTO.getStatus())) {
+            AssertUtils.asserts(
+                    employeeService.count(
+                            new MyLambdaQueryWrapper<Employee>()
+                                    .in(Employee::getDeptId, getDeptIdListWithItAndChildId(departmentDTO.getId()))
+                    ) == 0L, ResultCode.DEPT_OR_CHILDREN_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_CLOSE
+            );
+        }
         Department department = new Department();
         BeanUtil.copyProperties(departmentDTO, department);
         // todo: 当前端传来某些字段为null时，updateById方法会过滤掉null字段，导致数据错误
@@ -93,7 +107,13 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         AssertUtils.asserts(
                 this.count(new MyLambdaQueryWrapper<Department>().eq(Department::getParentId, id)) == 0,
                 ResultCode.DEPT_EXITS_CHILDREN);
-        // TODO ：考虑部门之下还有员工的情况
+        // 需考虑当前部门或子部门存在员工关联的情况
+        AssertUtils.asserts(
+                employeeService.count(
+                        new MyLambdaQueryWrapper<Employee>()
+                                .in(Employee::getDeptId, getDeptIdListWithItAndChildId(id))
+                ) == 0L, ResultCode.DEPT_OR_CHILDREN_EXIST_RELATED_EMPLOYEE_NOT_SUPPORT_DELETE
+        );
         this.removeById(id);
     }
 

@@ -8,6 +8,7 @@ import com.hwenbin.server.core.web.response.PageResult;
 import com.hwenbin.server.core.web.response.ResultCode;
 import com.hwenbin.server.core.web.response.SortingField;
 import com.hwenbin.server.dto.RoleDTO;
+import com.hwenbin.server.entity.AccountRole;
 import com.hwenbin.server.entity.Role;
 import com.hwenbin.server.enums.CommonStatusEnum;
 import com.hwenbin.server.enums.RoleTypeEnum;
@@ -100,6 +101,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     public void updateRoleStatus(Long roleId, Integer status) {
         checkRoleExistsAndBuiltin(roleId, true);
+        // 若状态变更为关闭，需考虑当前角色存在账户关联的情况
+        if (CommonStatusEnum.DISABLE.getStatus().equals(status)) {
+            AssertUtils.asserts(
+                    accountRoleService.count(
+                            new MyLambdaQueryWrapper<AccountRole>()
+                                    .eq(AccountRole::getRoleId, roleId)
+                    ) == 0L, ResultCode.ROLE_EXIST_ACCOUNT_RELATED
+            );
+        }
         final Role role = new Role();
         role.setId(roleId);
         role.setStatus(status);
