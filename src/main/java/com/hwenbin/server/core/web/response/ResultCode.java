@@ -100,7 +100,9 @@ public enum ResultCode {
 
     ROLE_TYPE_IS_BUILTIN_NOT_SUPPORT_CHANGE(2403, "当前操作的角色为系统内置角色，不允许变更"),
 
-    ROLE_EXIST_ACCOUNT_RELATED(2404, "当前操作的角色存在账户关联，不允许变更状态为关闭"),
+    ROLE_EXIST_ACCOUNT_RELATED_NOT_SUPPORT_CLOSE(2404, "当前操作的角色存在账户关联，不允许变更状态为关闭"),
+
+    ROLE_EXIST_ACCOUNT_RELATED_NOT_SUPPORT_DELETE(2405, "当前操作的角色存在账户关联，不允许删除"),
 
     /**
      * 文件

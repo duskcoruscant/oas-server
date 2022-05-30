@@ -90,10 +90,17 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public void deleteRoleAndCascadeDataById(Long roleId) {
         // 校验是否存在 与 是否允许删除
         checkRoleExistsAndBuiltin(roleId, true);
+        // 存在账户关联时不允许删除
+        AssertUtils.asserts(
+                accountRoleService.count(
+                        new MyLambdaQueryWrapper<AccountRole>()
+                                .eq(AccountRole::getRoleId, roleId)
+                ) == 0L, ResultCode.ROLE_EXIST_ACCOUNT_RELATED_NOT_SUPPORT_DELETE
+        );
         // 逻辑删除
         roleMapper.deleteById(roleId);
         // 删除 account-role
-        accountRoleService.deleteItemByRoleId(roleId);
+        // accountRoleService.deleteItemByRoleId(roleId);
         // 删除 role-permission
         rolePermissionService.deleteItemByRoleId(roleId);
     }
@@ -107,7 +114,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
                     accountRoleService.count(
                             new MyLambdaQueryWrapper<AccountRole>()
                                     .eq(AccountRole::getRoleId, roleId)
-                    ) == 0L, ResultCode.ROLE_EXIST_ACCOUNT_RELATED
+                    ) == 0L, ResultCode.ROLE_EXIST_ACCOUNT_RELATED_NOT_SUPPORT_CLOSE
             );
         }
         final Role role = new Role();
